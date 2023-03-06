@@ -38,7 +38,7 @@ Widget BuildMenuItems(BuildContext context) => Column(
         //add more kids here if need be
         ListTile(
           leading: const Icon(Icons.list_alt),
-          title: const Text("Recipes"),
+          title: const Text("Plants"),
           onTap: () {
             Navigator.pop(context);
           },
@@ -49,14 +49,14 @@ Widget BuildMenuItems(BuildContext context) => Column(
             Icons.favorite,
             color: Colors.red,
           ),
-          title: const Text("Favourite Recipes"),
+          title: const Text("Favourites"),
           onTap: () {
             Navigator.push(context, MaterialPageRoute<void>(
               builder: (BuildContext context) {
                 return MaterialApp(
                   home: Scaffold(
                     appBar: AppBar(
-                        title: const Text("Adam's Recipie Book"),
+                        title: const Text("Favourites"),
                         backgroundColor:
                             const Color.fromARGB(255, 156, 232, 94),
                         centerTitle: true,
@@ -64,13 +64,12 @@ Widget BuildMenuItems(BuildContext context) => Column(
                             color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
                     body: const Align(
                         alignment: Alignment.center,
-                        child: Text("Favourite Recipies")),
+                        child: Text("Favourite Plants")),
                     drawer: const NavigationDrawer(),
                   ),
                 );
               },
             ));
-            // handle Recipes button press
           },
         ),
         //SETTINGS PAGE
