@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:developer';
-import 'plant_db.dart';
+import 'Plant_DB.dart';
+import 'Navigation_Drawer.dart';
 
 Widget getHomePage(BuildContext context) {
-  return GridView.count(
-    primary: false,
-    padding: const EdgeInsets.all(20),
-    crossAxisSpacing: 10,
-    mainAxisSpacing: 10,
-    crossAxisCount: 2,
-    children: <Widget>[
-      for (int i = 0; i < plant_list.length; i++) genPlantTile(i, context),
-    ],
-  );
+  return Scaffold(
+      appBar: AppBar(
+          title: const Text("My Plants"),
+          backgroundColor: const Color.fromARGB(255, 156, 232, 94),
+          centerTitle: true,
+          titleTextStyle: const TextStyle(
+              color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
+      drawer: NavigationDrawer(context),
+      body: GridView.count(
+        primary: false,
+        padding: const EdgeInsets.all(20),
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        crossAxisCount: 2,
+        children: <Widget>[
+          for (int i = 0; i < plant_list.length; i++) genPlantTile(i, context),
+        ],
+      ));
 }
 
 Widget genPlantTile(int number, context) {
