@@ -18,7 +18,7 @@ Widget NavigationDrawer(BuildContext context) {
 // ignore: non_constant_identifier_names
 Widget BuildHeader(BuildContext context) => Container(
       color: Colors.blue.shade700,
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      padding: EdgeInsets.only(top: 5),
       child: Column(children: const [
         Padding(
           padding: EdgeInsets.only(top: 40, bottom: 40),

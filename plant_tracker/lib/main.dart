@@ -9,17 +9,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: MyHome());
-  }
-}
-
-//this builds the material App
-class MyHome extends StatelessWidget {
-  const MyHome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark().copyWith(
+        useMaterial3: true,
+      ),
       home: getHomePage(
           context), //i guess we change this function to have different bodies?
     );

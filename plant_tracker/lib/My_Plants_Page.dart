@@ -6,23 +6,30 @@ import 'Navigation_Drawer.dart';
 
 Widget getHomePage(BuildContext context) {
   return Scaffold(
-      appBar: AppBar(
-          title: const Text("My Plants"),
-          backgroundColor: const Color.fromARGB(255, 156, 232, 94),
-          centerTitle: true,
-          titleTextStyle: const TextStyle(
-              color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
-      drawer: NavigationDrawer(context),
-      body: GridView.count(
-        primary: false,
-        padding: const EdgeInsets.all(20),
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        crossAxisCount: 2,
-        children: <Widget>[
-          for (int i = 0; i < plant_list.length; i++) genPlantTile(i, context),
-        ],
-      ));
+    appBar: AppBar(
+        title: const Text("My Plants"),
+        backgroundColor: const Color.fromARGB(255, 156, 232, 94),
+        centerTitle: true,
+        titleTextStyle:
+            const TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
+    drawer: NavigationDrawer(context),
+    body: GridView.count(
+      primary: false,
+      padding: const EdgeInsets.all(20),
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      crossAxisCount: 2,
+      children: <Widget>[
+        for (int i = 0; i < plant_list.length; i++) genPlantTile(i, context),
+      ],
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {},
+      child: const Icon(Icons.add),
+      backgroundColor: const Color.fromARGB(255, 156, 232, 94),
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+  );
 }
 
 Widget genPlantTile(int number, context) {
