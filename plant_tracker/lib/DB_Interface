@@ -1,0 +1,67 @@
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+//TO DO: https://pub.dev/packages/sqflite
+
+class DatabaseHelper {
+  static final _databaseName = 'mydatabase.db';
+  static final _databaseVersion = 1;
+
+  // Singleton instance
+  DatabaseHelper._privateConstructor();
+  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+
+  // Database object
+  static Database? _database;
+
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+
+    // Lazily instantiate the database
+    _database = await _initDatabase();
+    return _database!;
+  }
+
+  // Initialize database
+  Future<Database> _initDatabase() async {
+    String path = join(await getDatabasesPath(), _databaseName);
+    return await openDatabase(path,
+        version: _databaseVersion, onCreate: _onCreate);
+  }
+
+  // Create table
+  Future<void> _onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE my_table (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        value INTEGER
+      )
+      ''');
+  }
+
+  // Insert data into table
+  Future<int> insertData(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    return await db.insert('my_table', row);
+  }
+
+  // Retrieve all data from table
+  Future<List<Map<String, dynamic>>> queryAllRows() async {
+    Database db = await instance.database;
+    return await db.query('my_table');
+  }
+
+  // Update data in table
+  Future<int> updateData(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    int id = row['id'];
+    return await db.update('my_table', row, where: 'id = ?', whereArgs: [id]);
+  }
+
+  // Delete data from table
+  Future<int> deleteData(int id) async {
+    Database db = await instance.database;
+    return await db.delete('my_table', where: 'id = ?', whereArgs: [id]);
+  }
+}
