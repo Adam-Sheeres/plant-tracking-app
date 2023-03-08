@@ -4,7 +4,9 @@ import '../Navigation_Drawer.dart';
 import 'package:intl/intl.dart';
 import '../plant_db.dart';
 
+// list of enums to be used for dropdown
 List<String> lightLevels = LightLevel.values.map((e) => e.name).toList();
+List<String> lightTypes = LightType.values.map((e) => e.name).toList();
 
 class AddPlantPage extends StatefulWidget {
   const AddPlantPage({super.key});
@@ -14,8 +16,11 @@ class AddPlantPage extends StatefulWidget {
 }
 
 class _AddPlantPage extends State<AddPlantPage> {
-  String dropdownValue = lightLevels.first;
+  // setting initial dropdown value
+  String dropdownLevelValue = lightLevels.first;
+  String dropdownTypeValue = lightTypes.first;
 
+  // controllers to get user input
   TextEditingController dateController = TextEditingController();
   TextEditingController plantNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -54,7 +59,7 @@ class _AddPlantPage extends State<AddPlantPage> {
               _buildDate(context),
               _buildWaterDays(),
               _buildDescription(),
-              _buildLightLevel(),
+              _buildLightInfo(),
               _buildButton(context),
             ],
           ),
@@ -75,7 +80,7 @@ class _AddPlantPage extends State<AddPlantPage> {
         ))),
         child: const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text('Create Entry',
+          child: Text('Add Plant',
               style: TextStyle(
                 fontSize: 25,
               )),
@@ -231,21 +236,22 @@ class _AddPlantPage extends State<AddPlantPage> {
     );
   }
 
-  Row _buildLightLevel() {
+  Row _buildLightInfo() {
     return Row(
       children: [
         const Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            'Light Level: ',
+            'Light Info: ',
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
+        // Light Level dropdown
         DropdownButton<String>(
-          value: dropdownValue,
+          value: dropdownLevelValue,
           icon: const Icon(Icons.arrow_downward),
           elevation: 16,
           // style: const TextStyle(color: Colors.deepPurple),
@@ -256,10 +262,33 @@ class _AddPlantPage extends State<AddPlantPage> {
           onChanged: (String? value) {
             // This is called when the user selects an item.
             setState(() {
-              dropdownValue = value!;
+              dropdownLevelValue = value!;
             });
           },
           items: lightLevels.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+        // Light Type dropdown (direct/indirect)
+        DropdownButton<String>(
+          value: dropdownTypeValue,
+          icon: const Icon(Icons.arrow_downward),
+          elevation: 16,
+          // style: const TextStyle(color: Colors.deepPurple),
+          underline: Container(
+            height: 2,
+            // color: Colors.deepPurpleAccent,
+          ),
+          onChanged: (String? value) {
+            // This is called when the user selects an item.
+            setState(() {
+              dropdownTypeValue = value!;
+            });
+          },
+          items: lightTypes.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(value),
