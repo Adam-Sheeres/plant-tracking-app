@@ -31,7 +31,7 @@ class NavDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Text('Recipes'),
+            title: const Text('My Plants'),
             leading: const Icon(
               Icons.list_alt_rounded,
             ),
@@ -42,7 +42,7 @@ class NavDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Favourite Recipes'),
+            title: const Text('Favourite Plants'),
             leading: const Icon(
               Icons.favorite,
               color: Colors.red,

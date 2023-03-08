@@ -6,6 +6,8 @@ import 'Plant_DB.dart';
 import 'Navigation_Drawer.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -16,7 +18,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
           title: const Text("My Plants"),
-          backgroundColor: Color.fromARGB(255, 44, 71, 22),
+          backgroundColor: const Color.fromARGB(255, 44, 71, 22),
           centerTitle: true,
           titleTextStyle: const TextStyle(
               color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),

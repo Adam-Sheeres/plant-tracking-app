@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../Navigation_Drawer.dart';
 import 'package:intl/intl.dart';
+import '../plant_db.dart';
+
+List<String> lightLevels = LightLevel.values.map((e) => e.name).toList();
 
 class AddPlantPage extends StatefulWidget {
   const AddPlantPage({super.key});
@@ -10,15 +14,19 @@ class AddPlantPage extends StatefulWidget {
 }
 
 class _AddPlantPage extends State<AddPlantPage> {
+  String dropdownValue = lightLevels.first;
+
   TextEditingController dateController = TextEditingController();
-  TextEditingController titleController = TextEditingController();
+  TextEditingController plantNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController waterDaysController = TextEditingController();
+
   DateTime entryDate = DateTime.now();
 
   @override
   void dispose() {
     dateController.dispose();
-    titleController.dispose();
+    plantNameController.dispose();
     descriptionController.dispose();
     super.dispose();
   }
@@ -42,9 +50,11 @@ class _AddPlantPage extends State<AddPlantPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             //mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              _buildTitle(),
+              _buildPlantName(),
               _buildDate(context),
+              _buildWaterDays(),
               _buildDescription(),
+              _buildLightLevel(),
               _buildButton(context),
             ],
           ),
@@ -61,7 +71,7 @@ class _AddPlantPage extends State<AddPlantPage> {
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
-          side: BorderSide(color: Colors.blue.shade700),
+          side: const BorderSide(color: Color.fromARGB(255, 156, 232, 94)),
         ))),
         child: const Padding(
           padding: EdgeInsets.all(8.0),
@@ -127,14 +137,14 @@ class _AddPlantPage extends State<AddPlantPage> {
     );
   }
 
-  Column _buildTitle() {
+  Column _buildPlantName() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            'Title: ',
+            'Plant: ',
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
@@ -144,7 +154,7 @@ class _AddPlantPage extends State<AddPlantPage> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextField(
-            controller: titleController,
+            controller: plantNameController,
             maxLines: 1,
             minLines: 1,
             decoration: const InputDecoration(
@@ -182,6 +192,79 @@ class _AddPlantPage extends State<AddPlantPage> {
               labelText: 'Enter a brief description of your plant ...',
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  Column _buildWaterDays() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            'Watering Days: ',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            controller: waterDaysController,
+            maxLines: 1,
+            minLines: 1,
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Enter number of days between watering',
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Row _buildLightLevel() {
+    return Row(
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            'Light Level: ',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        DropdownButton<String>(
+          value: dropdownValue,
+          icon: const Icon(Icons.arrow_downward),
+          elevation: 16,
+          // style: const TextStyle(color: Colors.deepPurple),
+          underline: Container(
+            height: 2,
+            // color: Colors.deepPurpleAccent,
+          ),
+          onChanged: (String? value) {
+            // This is called when the user selects an item.
+            setState(() {
+              dropdownValue = value!;
+            });
+          },
+          items: lightLevels.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
         ),
       ],
     );
