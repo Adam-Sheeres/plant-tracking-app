@@ -132,28 +132,22 @@ Widget genPlantTile(int number, context) {
           )));
 }
 
-// double getWateringBar(Plant curPlant, context) {
-//   DateTime now = DateTime.now();
-//   int daysSinceWatering = now.difference(curPlant.last_watered).inDays;
-//   double wateringProgress =
-//       (daysSinceWatering / curPlant.water_days).clamp(0.0, 1.0);
-//   log(wateringProgress.toString());
-
-//   return wateringProgress;
-// }
-
 double getWateringBar(Plant plant) {
-  DateTime nextDateToWater =
-      plant.last_watered.add(Duration(days: plant.water_days));
+  DateTime nextDateToWater = plant.last_watered
+      .add(Duration(days: plant.water_days)); //last date watered + water_days
   DateTime now = DateTime.now();
-  int diffBetweenNowAndNextWater = now.difference(nextDateToWater).inHours;
+  int diffBetweenNowAndNextWater = nextDateToWater
+      .difference(now)
+      .inHours; //difference between when to water next and now
 
-  int totalWaitingTimeInHours = plant.water_days * 24;
+  if (nextDateToWater.isBefore(now)) {
+    return 0.0;
+  }
+
+  int totalWaitingTimeInHours =
+      plant.water_days * 24; //calculate the max value of the bar, would be 1
 
   double diff = (diffBetweenNowAndNextWater / totalWaitingTimeInHours);
-  diff = totalWaitingTimeInHours - diff;
-
-  diff = diff / totalWaitingTimeInHours;
 
   log("${diff}out of $totalWaitingTimeInHours");
 
