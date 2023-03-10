@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Builder(
         builder: (context) => getHomePage(
-          context), //i guess we change this function to have different bodies?
+            context), //i guess we change this function to have different bodies?
       ),
     );
   }
