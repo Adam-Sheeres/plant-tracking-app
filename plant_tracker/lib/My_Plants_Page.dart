@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'dart:developer';
 import 'Plant_DB.dart';
 import 'Navigation_Drawer.dart';
+import 'Plant_Info_Page.dart';
 
 Widget getHomePage(BuildContext context) {
   return Scaffold(
@@ -37,6 +38,11 @@ Widget genPlantTile(int number, context) {
   return GestureDetector(
       onTap: () {
         log("Moving to page ${curPlant.plant_name}"); //HERE IS WHERE YOU ADD THE 'PLANT PAGE'
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => PlantInfoPage(
+            displayPlant: curPlant,
+          )
+        ));
       },
       child: Card(
           shape:
