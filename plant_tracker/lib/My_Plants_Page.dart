@@ -4,6 +4,7 @@ import 'package:plant_tracker/pages/add_plant_page.dart';
 import 'dart:developer';
 import 'Plant_DB.dart';
 import 'Navigation_Drawer.dart';
+import 'Plant_Info_Page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -50,21 +51,29 @@ class _HomePageState extends State<HomePage> {
 Widget genPlantTile(int number, context) {
   Plant curPlant = plant_list[number];
   return GestureDetector(
-    onTap: () {
-      log("Moving to page ${curPlant.plant_name}"); //HERE IS WHERE YOU ADD THE 'PLANT PAGE'
-    },
-    child: Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      child: Stack(
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              image: DecorationImage(
-                image: NetworkImage(curPlant.imageUrl),
-                fit: BoxFit.cover,
+      onTap: () {
+        log("Moving to page ${curPlant.plant_name}"); //HERE IS WHERE YOU ADD THE 'PLANT PAGE'
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => PlantInfoPage(
+            displayPlant: curPlant,
+          )
+        ));
+      },
+      child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          child: Stack(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  image: DecorationImage(
+                    image: NetworkImage(curPlant.imageUrl),
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
+            ]),
           ),
           Container(
             decoration: BoxDecoration(
