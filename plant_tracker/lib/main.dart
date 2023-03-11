@@ -13,10 +13,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         useMaterial3: true,
       ),
-      home: Builder(
-        builder: (context) => getHomePage(
-            context), //i guess we change this function to have different bodies?
-      ),
+      home:
+          HomePage(), //i guess we change this function to have different bodies?
     );
   }
 }

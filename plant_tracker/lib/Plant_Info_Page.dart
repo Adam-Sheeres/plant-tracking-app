@@ -6,14 +6,14 @@ import 'Navigation_Drawer.dart';
 
 class PlantInfoPage extends StatelessWidget {
   Plant displayPlant;
-  PlantInfoPage({required this.displayPlant});
+  PlantInfoPage({super.key, required this.displayPlant});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Plant Details"),
+        title: const Text("Plant Details"),
         elevation: 0,
-        backgroundColor: Color.fromARGB(255, 44, 71, 22),
+        backgroundColor: const Color.fromARGB(255, 44, 71, 22),
       ),
       body: Stack(
         children: [
@@ -28,7 +28,7 @@ class PlantInfoPage extends StatelessWidget {
             ),
           ),
           Container(
-            color: Color.fromRGBO(0, 0, 0, 0.7),
+            color: const Color.fromRGBO(0, 0, 0, 0.7),
             width: double.infinity,
             child: SafeArea(
               child: Column(
@@ -38,16 +38,16 @@ class PlantInfoPage extends StatelessWidget {
                   Text(
                     displayPlant.plant_name,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 40,
                       decoration: TextDecoration.underline,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Text(
+                  const Text(
                     "Light Details",
                     style: TextStyle(
                       color: Colors.white,
@@ -56,28 +56,33 @@ class PlantInfoPage extends StatelessWidget {
                     ),
                     textAlign: TextAlign.start,
                   ),
-                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text(displayPlant.light_type.displayValue, style: TextStyle(fontSize: 18),),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            displayPlant.light_type.name,
+                            style: const TextStyle(fontSize: 18),
                           ),
                         ),
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text(displayPlant.light_level.displayValue, style: TextStyle(fontSize: 18),),
+                      ),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            displayPlant.light_level.name,
+                            style: const TextStyle(fontSize: 18),
                           ),
                         ),
+                      ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Text(
+                  const Text(
                     "Description",
                     style: TextStyle(
                       color: Colors.white,
@@ -89,12 +94,12 @@ class PlantInfoPage extends StatelessWidget {
                   Text(
                     displayPlant.description,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
                   ),
-                   SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Text(
+                  const Text(
                     "Room",
                     style: TextStyle(
                       color: Colors.white,
@@ -105,15 +110,15 @@ class PlantInfoPage extends StatelessWidget {
                   ),
                   Text(
                     displayPlant.room!.name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Text(
+                  const Text(
                     "Note",
                     style: TextStyle(
                       color: Colors.white,
@@ -124,15 +129,15 @@ class PlantInfoPage extends StatelessWidget {
                   ),
                   Text(
                     displayPlant.note.note,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  
+
                   /*Consumer<AttractionModel>(builder: (context, aModel, _) {
                     return ElevatedButton(
                       onPressed: () {
