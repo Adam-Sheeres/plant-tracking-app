@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'pages/favourites_page.dart';
 import 'pages/settings_page.dart';
+import 'Import_Export_Page.dart';
 
 class NavDrawer extends StatelessWidget {
   const NavDrawer({super.key});
@@ -52,6 +53,25 @@ class NavDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const FavouritesPage(),
+                ),
+              );
+              // Update the state of the app
+              // ...
+              // Then close the drawer
+              // Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text('Import/Export Data'),
+            leading: const Icon(
+              Icons.import_export,
+              // color: Colors.red,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ImportExportPage(),
                 ),
               );
               // Update the state of the app

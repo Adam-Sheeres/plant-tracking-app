@@ -56,6 +56,12 @@ class _AddPlantPage extends State<AddPlantPage> {
             //mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               _buildPlantName(),
+              ElevatedButton(
+                onPressed: () {
+                  // Implement file importing functionality here
+                },
+                child: const Text('Upload Image'),
+              ),
               _buildDate(context),
               _buildWaterDays(),
               _buildDescription(),

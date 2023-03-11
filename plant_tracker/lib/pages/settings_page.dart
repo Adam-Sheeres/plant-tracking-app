@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import '../Navigation_Drawer.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
+  @override
+  State<SettingsPage> createState() => _SettingsPage();
+}
+
+class _SettingsPage extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +22,7 @@ class SettingsPage extends StatelessWidget {
         alignment: Alignment.center,
         child: Text("Settings"),
       ),
-      drawer: const NavDrawer(),
+      // drawer: const NavDrawer(),
     );
   }
 }

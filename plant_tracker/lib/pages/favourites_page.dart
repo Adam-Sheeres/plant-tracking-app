@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import '../Navigation_Drawer.dart';
 
-class FavouritesPage extends StatelessWidget {
+class FavouritesPage extends StatefulWidget {
   const FavouritesPage({super.key});
 
+  @override
+  State<FavouritesPage> createState() => _FavouritesPage();
+}
+
+class _FavouritesPage extends State<FavouritesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +22,7 @@ class FavouritesPage extends StatelessWidget {
         alignment: Alignment.center,
         child: Text("Favourite Plants"),
       ),
-      drawer: const NavDrawer(),
+      // drawer: const NavDrawer(),
     );
   }
 }
