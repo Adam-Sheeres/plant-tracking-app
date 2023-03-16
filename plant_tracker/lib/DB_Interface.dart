@@ -59,7 +59,9 @@ class DatabaseHelper {
       CREATE TABLE notes (
         id INTEGER PRIMARY KEY,
         note TEXT,
-        dateAdded DATETIME
+        dateAdded DATETIME,
+        photo STRING,
+        plantID INTEGER
       )
       ''');
   }
