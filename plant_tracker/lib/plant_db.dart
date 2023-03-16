@@ -1,6 +1,32 @@
 enum LightLevel { dark, medium, bright }
+extension LightLevelExtension on LightLevel {
+  String get displayValue{
+    switch(this){
+      case LightLevel.dark:
+        return "Dark";
+      case LightLevel.medium:
+        return "Medium";
+      case LightLevel.bright:
+        return "Bright";
+      default:
+        return "Dark";
+    }
+  }
+}
 
 enum LightType { direct, indirect }
+extension LightTypeExtension on LightType {
+  String get displayValue{
+    switch(this){
+      case LightType.direct:
+        return "Direct";
+      case LightType.indirect:
+        return "Indirect";
+      default:
+        return "No Light";
+    }
+  }
+}
 
 class Plant {
   String plant_name, description, imageUrl;
