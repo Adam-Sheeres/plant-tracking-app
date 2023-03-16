@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plant_tracker/pages/add_plant_page.dart';
@@ -167,16 +169,17 @@ double getWateringBar(Plant plant) {
   DateTime nextDateToWater =
       plant.last_watered.add(Duration(days: plant.water_days));
   DateTime now = DateTime.now();
-  int diffBetweenNowAndNextWater = now.difference(nextDateToWater).inHours;
 
+  int diffBetweenNowAndNextWater = nextDateToWater.difference(now).inHours;
   int totalWaitingTimeInHours = plant.water_days * 24;
 
+  //if it is negative, the day to water has passed so just return 0
+  if (diffBetweenNowAndNextWater <= 0) {
+    return 0.0;
+  }
+
+  //find the ratio between when to next water and the total amount of time
   double diff = (diffBetweenNowAndNextWater / totalWaitingTimeInHours);
-  diff = totalWaitingTimeInHours - diff;
-
-  diff = diff / totalWaitingTimeInHours;
-
-  log("${diff}out of $totalWaitingTimeInHours");
 
   return diff;
 }
