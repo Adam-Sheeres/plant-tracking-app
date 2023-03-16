@@ -30,7 +30,7 @@ extension LightTypeExtension on LightType {
 
 class Plant {
   String plant_name, description, imageUrl;
-  var water_days, water_volume;
+  var water_days, water_volume, plant_id;
   DateTime date_added, last_watered;
   bool isFavourite;
   Note note;
@@ -41,7 +41,8 @@ class Plant {
   Room? room;
 
   Plant(
-      {required this.plant_name,
+      {required this.plant_id,
+      required this.plant_name,
       required this.date_added,
       required this.water_days,
       required this.last_watered,
@@ -57,10 +58,11 @@ class Plant {
 
 List<Plant> plant_list = [
   Plant(
+    plant_id: 1,
     plant_name: 'Monstera',
-    date_added: DateTime(2022, 9, 7, 17, 30),
-    water_days: 4,
-    last_watered: DateTime(2022, 3, 2, 17, 30),
+    date_added: DateTime(2023, 9, 7, 17, 30),
+    water_days: 14,
+    last_watered: DateTime(2023, 3, 2, 17, 30),
     water_volume: 12,
     light_level: LightLevel.bright,
     light_type: LightType.direct,
@@ -75,10 +77,11 @@ List<Plant> plant_list = [
     room: room_list[1], // provide a default value for room
   ),
   Plant(
+    plant_id: 0,
     plant_name: 'Regal Shield',
     date_added: DateTime(2022, 9, 7, 17, 30),
     water_days: 6,
-    last_watered: DateTime(2022, 3, 4, 17, 30),
+    last_watered: DateTime(2023, 3, 4, 17, 30),
     water_volume: 12,
     light_level: LightLevel.bright,
     light_type: LightType.direct,
