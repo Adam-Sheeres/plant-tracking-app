@@ -92,7 +92,7 @@ Widget genPlantTile(int number, context) {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            curPlant.room?.name ?? "",
+                            curPlant.room.toString(),
                             style: const TextStyle(color: Colors.white),
                           ),
                         )),
