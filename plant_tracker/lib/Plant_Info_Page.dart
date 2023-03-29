@@ -128,7 +128,7 @@ class PlantInfoPage extends StatelessWidget {
                     textAlign: TextAlign.start,
                   ),
                   Text(
-                    displayPlant.note.note,
+                    displayPlant.note.toString(),
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.white,

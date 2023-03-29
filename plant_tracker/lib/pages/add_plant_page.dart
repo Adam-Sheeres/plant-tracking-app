@@ -94,9 +94,9 @@ class _AddPlantPage extends State<AddPlantPage> {
               )),
         ),
         onPressed: () {
-          widget.db.addPlant(
-            Plant(), //please add the stuff for the plant from the form here, to add to the db
-          );
+          // widget.db.addPlant(
+          //   Plant(), //please add the stuff for the plant from the form here, to add to the db
+          // );
           Navigator.pop(context);
         },
       ),

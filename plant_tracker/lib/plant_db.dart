@@ -49,7 +49,7 @@ class Plant {
   var water_days, water_volume, plant_id;
   DateTime date_added, last_watered;
   bool isFavourite;
-  Note note;
+  List<Note>? note;
 
   LightLevel light_level;
   LightType light_type;
@@ -68,11 +68,18 @@ class Plant {
     required this.imageUrl,
     required this.description,
     required this.isFavourite,
-    required this.note,
+    this.note,
     this.room,
   });
 
   factory Plant.fromJson(Map<String, dynamic> json) {
+    List<dynamic> noteJsonList = json['note'] ?? [];
+    List<Note> noteList = noteJsonList.map((noteJson) {
+      DateTime dateAdded = DateTime.parse(noteJson['dateAdded']);
+      String note = noteJson['note'];
+      return Note(dateAdded: dateAdded, note: note);
+    }).toList();
+
     return Plant(
       plant_id: json['plant_id'],
       plant_name: json['plant_name'],
@@ -85,10 +92,7 @@ class Plant {
       imageUrl: json['imageUrl'],
       description: json['description'],
       isFavourite: json['isFavourite'],
-      note: Note(
-        dateAdded: DateTime.parse(json['note_date']),
-        note: json['note'],
-      ),
+      note: noteList,
       room: json['room'],
     );
   }
@@ -118,6 +122,16 @@ class Plant {
   }
 
   Map<String, dynamic> toJson() {
+    List<Map<String, dynamic>> noteJsonList = [];
+    if (note != null) {
+      noteJsonList = note!
+          .map((note) => {
+                'dateAdded': note.dateAdded.toIso8601String(),
+                'note': note.note,
+              })
+          .toList();
+    }
+
     return {
       'plant_id': plant_id,
       'plant_name': plant_name,
@@ -130,9 +144,8 @@ class Plant {
       'imageUrl': imageUrl,
       'description': description,
       'isFavourite': isFavourite,
-      'note': note.note,
-      'note_date': note.dateAdded.toIso8601String(),
-      'room': room,
+      'note': noteJsonList,
+      'room': room!,
     };
   }
 }
@@ -167,6 +180,10 @@ class plantDB {
     return File('$path/plant_list.json');
   }
 
+  Future<void> addNote(String plantName) async {
+    List<Plant> plants = await getPlants();
+  }
+
   Future<void> addPlant(Plant newPlant) async {
     // Get the current list of plants
     List<Plant> plants = await getPlants();
@@ -174,10 +191,6 @@ class plantDB {
     // Add the new plant to the plant_list
     plants.add(newPlant);
     plant_list = plants;
-
-    print("plant_list: " + plant_list.toString());
-
-    print("Added plant " + newPlant.plant_name);
 
     // Write the updated plant_list to a file
     await writePlants(plants);
@@ -205,7 +218,6 @@ class plantDB {
     try {
       final file = await _localFile;
       final contents = await file.readAsString();
-      print("contents: " + contents);
       final List<dynamic> jsonList = jsonDecode(contents);
       return jsonList.map((json) => Plant.fromJson(json)).toList();
     } catch (e) {
