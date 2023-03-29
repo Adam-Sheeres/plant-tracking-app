@@ -36,13 +36,13 @@ extension LightTypeExtension on LightType {
   }
 }
 
-class Note {
-  String note;
-  DateTime timeAdded;
-  String plantName;
+// class Note {
+//   String note;
+//   DateTime timeAdded;
+//   String plantName;
 
-  Note({required this.note, required this.timeAdded, required this.plantName});
-}
+//   Note({required this.note, required this.timeAdded, required this.plantName});
+// }
 
 class Plant {
   String plant_name, description, imageUrl;
@@ -137,8 +137,6 @@ class Plant {
   }
 }
 
-List<Plant> plant_list = [];
-
 class Note {
   DateTime dateAdded;
   String note;
@@ -152,6 +150,12 @@ class Room {
 }
 
 class plantDB {
+  List<Plant> plant_list = [];
+
+  List<Plant> getList() {
+    return plant_list;
+  }
+
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
 
@@ -170,6 +174,8 @@ class plantDB {
     // Add the new plant to the plant_list
     plants.add(newPlant);
     plant_list = plants;
+
+    print("plant_list: " + plant_list.toString());
 
     print("Added plant " + newPlant.plant_name);
 
@@ -192,7 +198,6 @@ class plantDB {
   Future<void> writePlants(List<Plant> plants) async {
     // Write the updated plant_list to the file
     final file = await _localFile;
-    print(file);
     await file.writeAsString(jsonEncode(plants));
   }
 
@@ -200,7 +205,7 @@ class plantDB {
     try {
       final file = await _localFile;
       final contents = await file.readAsString();
-      print(contents);
+      print("contents: " + contents);
       final List<dynamic> jsonList = jsonDecode(contents);
       return jsonList.map((json) => Plant.fromJson(json)).toList();
     } catch (e) {
