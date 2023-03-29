@@ -36,6 +36,14 @@ extension LightTypeExtension on LightType {
   }
 }
 
+class Note {
+  String note;
+  DateTime timeAdded;
+  String plantName;
+
+  Note({required this.note, required this.timeAdded, required this.plantName});
+}
+
 class Plant {
   String plant_name, description, imageUrl;
   var water_days, water_volume, plant_id;

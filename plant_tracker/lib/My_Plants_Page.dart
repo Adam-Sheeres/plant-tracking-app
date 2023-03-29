@@ -51,6 +51,8 @@ class _HomePageState extends State<HomePage> {
 }
 
 Widget genPlantTile(int number, context) {
+  //query the db to get all the plants
+  //return a list of widgets instead of a single one
   Plant curPlant = plant_list[number];
   return GestureDetector(
     onTap: () {
