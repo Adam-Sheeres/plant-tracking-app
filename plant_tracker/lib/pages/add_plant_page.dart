@@ -94,29 +94,9 @@ class _AddPlantPage extends State<AddPlantPage> {
               )),
         ),
         onPressed: () {
-          // print("LLIST: " + widget.db.getPlants.toString());
           widget.db.addPlant(
-            Plant(
-              plant_id: 1,
-              plant_name: 'Monstera',
-              date_added: DateTime(2023, 9, 7, 17, 30),
-              water_days: 14,
-              last_watered: DateTime(2023, 3, 2, 17, 30),
-              water_volume: 12,
-              light_level: LightLevel.bright,
-              light_type: LightType.direct,
-              imageUrl:
-                  'https://upload.wikimedia.org/wikipedia/commons/2/2e/Monstera_deliciosa2.jpg',
-              description: 'This is a plant.',
-              isFavourite: true,
-              note: Note(
-                dateAdded: DateTime.now(),
-                note: 'This is a note.',
-              ),
-              room: 'Living Room', // provide a default value for room
-            ),
+            Plant(), //please add the stuff for the plant from the form here, to add to the db
           );
-          // need to add functionality here to add plant to local storage/database
           Navigator.pop(context);
         },
       ),
