@@ -17,55 +17,55 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   plantDB db = plantDB(); //init the db
+  List<Plant> _plantList = [];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: const Text("My Plants"),
-          backgroundColor: const Color.fromARGB(255, 44, 71, 22),
-          centerTitle: true,
-          titleTextStyle: const TextStyle(
-              color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
-      drawer: const NavDrawer(),
-      body: FutureBuilder<List<Plant>>(
-        future: db.getPlants(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return GridView.count(
+    return FutureBuilder<List<Plant>>(
+      future: db.getPlants(),
+      builder: (BuildContext context, AsyncSnapshot<List<Plant>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          _plantList = snapshot.data!;
+          return Scaffold(
+            appBar: AppBar(
+                title: const Text("My Plants"),
+                backgroundColor: const Color.fromARGB(255, 44, 71, 22),
+                centerTitle: true,
+                titleTextStyle: const TextStyle(
+                    color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
+            drawer: const NavDrawer(),
+            body: GridView.count(
               primary: false,
               padding: const EdgeInsets.all(20),
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
               crossAxisCount: 2,
-              children: getPlantTiles(snapshot.data!, context),
-            );
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
-          // By default, show a loading spinner
-          return CircularProgressIndicator();
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      AddPlantPage(db: plantDB(), key: UniqueKey())));
-          setState(() {});
-        },
-        backgroundColor: const Color.fromARGB(255, 156, 232, 94),
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+              children: getPlantTiles(_plantList, context),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AddPlantPage(db: plantDB(), key: UniqueKey())));
+                _plantList = await db.getPlants();
+                setState(() {});
+              },
+              backgroundColor: const Color.fromARGB(255, 156, 232, 94),
+              child: const Icon(Icons.add),
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }
 
 List<Widget> getPlantTiles(List<Plant> plant_list, BuildContext context) {
-  // List<Plant> plant_list = await db.getPlants();
   print(plant_list);
 
   List<Widget> tiles = [];

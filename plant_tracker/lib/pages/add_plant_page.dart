@@ -94,7 +94,7 @@ class _AddPlantPage extends State<AddPlantPage> {
               )),
         ),
         onPressed: () {
-          // print("LLIST: " + widget.db.getPlants().toString());
+          // print("LLIST: " + widget.db.getPlants.toString());
           widget.db.addPlant(
             Plant(
               plant_id: 1,
