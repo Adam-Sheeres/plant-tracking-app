@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 //TO DO: https://pub.dev/packages/sqflite
 
 class DatabaseHelper {
-  static final _databases = ['plants.db', 'rooms.db', 'notes.db'];
+  static final _databases = ['plants.db', 'notes.db'];
   static final _databaseVersion = 1;
 
   // Singleton instance
@@ -49,12 +49,7 @@ class DatabaseHelper {
         room TEXT
       )
       ''');
-    await db.execute('''
-      CREATE TABLE rooms (
-        id INTEGER PRIMARY KEY,
-        name TEXT,
-      )
-      ''');
+
     await db.execute('''
       CREATE TABLE notes (
         id INTEGER PRIMARY KEY,
@@ -77,11 +72,6 @@ class DatabaseHelper {
     return await db.insert('notes', row);
   }
 
-  Future<int> insertNewRoom(Map<String, dynamic> row) async {
-    Database db = await instance.plants;
-    return await db.insert('rooms', row);
-  }
-
   // Retrieve all data from table
   Future<List<Map<String, dynamic>>> getAllPlants() async {
     Database db = await instance.plants;
@@ -91,11 +81,6 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getAllNotes() async {
     Database db = await instance.plants;
     return await db.query('notes');
-  }
-
-  Future<List<Map<String, dynamic>>> getAllRooms() async {
-    Database db = await instance.plants;
-    return await db.query('rooms');
   }
 
   // Update data in table

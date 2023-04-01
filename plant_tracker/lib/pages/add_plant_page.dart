@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../Navigation_Drawer.dart';
 import 'package:intl/intl.dart';
-import '../plant_db.dart';
+import '../Plant_DB.dart';
 
 // list of enums to be used for dropdown
 List<String> lightLevels = LightLevel.values.map((e) => e.name).toList();
 List<String> lightTypes = LightType.values.map((e) => e.name).toList();
 
 class AddPlantPage extends StatefulWidget {
-  const AddPlantPage({super.key});
+  final plantDB db;
+
+  const AddPlantPage({required this.db, Key? key}) : super(key: key);
 
   @override
   State<AddPlantPage> createState() => _AddPlantPage();
@@ -92,7 +94,9 @@ class _AddPlantPage extends State<AddPlantPage> {
               )),
         ),
         onPressed: () {
-          // need to add functionality here to add plant to local storage/database
+          // widget.db.addPlant(
+          //   Plant(), //please add the stuff for the plant from the form here, to add to the db
+          // );
           Navigator.pop(context);
         },
       ),
