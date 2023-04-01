@@ -207,4 +207,5 @@ double getWateringBar(Plant plant) {
   double diff = (diffBetweenNowAndNextWater / totalWaitingTimeInHours);
 
   log("${diff}out of $totalWaitingTimeInHours");
+  return diff;
 }
