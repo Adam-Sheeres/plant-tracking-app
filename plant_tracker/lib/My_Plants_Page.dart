@@ -184,12 +184,19 @@ List<Widget> getPlantTiles(List<Plant> plant_list, BuildContext context) {
 }
 
 double getWateringBar(Plant plant) {
-  DateTime nextDateToWater =
-      plant.last_watered.add(Duration(days: plant.water_days));
+  DateTime nextDateToWater = plant.last_watered
+      .add(Duration(days: plant.water_days)); //last date watered + water_days
   DateTime now = DateTime.now();
+  int diffBetweenNowAndNextWater = nextDateToWater
+      .difference(now)
+      .inHours; //difference between when to water next and now
 
-  int diffBetweenNowAndNextWater = nextDateToWater.difference(now).inHours;
-  int totalWaitingTimeInHours = plant.water_days * 24;
+  if (nextDateToWater.isBefore(now)) {
+    return 0.0;
+  }
+
+  int totalWaitingTimeInHours =
+      plant.water_days * 24; //calculate the max value of the bar, would be 1
 
   //if it is negative, the day to water has passed so just return 0
   if (diffBetweenNowAndNextWater <= 0) {
@@ -199,5 +206,5 @@ double getWateringBar(Plant plant) {
   //find the ratio between when to next water and the total amount of time
   double diff = (diffBetweenNowAndNextWater / totalWaitingTimeInHours);
 
-  return diff;
+  log("${diff}out of $totalWaitingTimeInHours");
 }
