@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../plantdb.dart';
+import '../services/plantdb.dart';
 
 class SettingsPage extends StatefulWidget {
   final VoidCallback refreshPlantList;
