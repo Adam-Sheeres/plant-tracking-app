@@ -182,10 +182,22 @@ Future<File> get _localFile async {
   return File('$path/plant_list.json');
 }
 
-//TODO complete this function
-  Future<void> addNote(String plantName) async {
+  Future<void> addNote(String plantName, Note newNote) async {
     List<Plant> plants = await getPlants();
+
+    // Find the plant with the given name
+    int plantIndex = plants.indexWhere((plant) => plant.plant_name == plantName);
+
+    // If the plant is found, add the new note to its list of notes
+    if (plantIndex != -1) {
+      plants[plantIndex].note ??= [];
+      plants[plantIndex].note!.add(newNote);
+
+      // Write the updated plant_list to a file
+      await writePlants(plants);
+    }
   }
+
 
   Future<void> addPlant(Plant newPlant) async {
     // Get the current list of plants

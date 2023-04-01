@@ -1,7 +1,6 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'pages/favourites_page.dart';
 import 'pages/settings_page.dart';
 
 class NavDrawer extends StatelessWidget {
