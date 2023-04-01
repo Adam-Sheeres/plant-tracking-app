@@ -1,10 +1,11 @@
+// ignore_for_file: non_constant_identifier_names, camel_case_types
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 enum LightLevel { dark, medium, bright }
 
-File _localFile = File('plant_list.json');
 
 extension LightLevelExtension on LightLevel {
   String get displayValue {
@@ -46,6 +47,7 @@ extension LightTypeExtension on LightType {
 
 class Plant {
   String plant_name, description, imageUrl;
+  // ignore: prefer_typing_uninitialized_variables
   var water_days, water_volume, plant_id;
   DateTime date_added, last_watered;
   bool isFavourite;
@@ -241,7 +243,6 @@ Future<File> get _localFile async {
       final List<dynamic> jsonList = jsonDecode(contents);
       return jsonList.map((json) => Plant.fromJson(json)).toList();
     } catch (e) {
-      print('Error reading plant list file: $e');
       return [];
     }
   }

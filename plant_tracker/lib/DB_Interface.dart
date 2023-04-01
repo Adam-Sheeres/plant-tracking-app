@@ -1,11 +1,15 @@
+
+// ignore_for_file: file_names
+
 import 'package:sqflite/sqflite.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
 //TO DO: https://pub.dev/packages/sqflite
 
 class DatabaseHelper {
   static final _databases = ['plants.db', 'notes.db'];
-  static final _databaseVersion = 1;
+  static const _databaseVersion = 1;
 
   // Singleton instance
   DatabaseHelper._privateConstructor();

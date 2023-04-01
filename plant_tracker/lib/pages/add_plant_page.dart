@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../Navigation_Drawer.dart';
 import 'package:intl/intl.dart';
 import '../plantdb.dart';
 
@@ -93,7 +92,6 @@ class _AddPlantPage extends State<AddPlantPage> {
               )),
         ),
         onPressed: () {
-          print("HELLO??");
                   Plant newPlant = Plant(
                     plant_id: widget.db.plant_list.length + 1,
                     plant_name: plantNameController.text,
@@ -111,7 +109,6 @@ class _AddPlantPage extends State<AddPlantPage> {
                     note: [],
                     room: null,
                   );
-                  print("Adding plant: " + newPlant.toString());
                   widget.db.addPlant(newPlant);
                 
           Navigator.pop(context);
