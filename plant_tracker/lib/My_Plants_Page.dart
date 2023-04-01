@@ -295,7 +295,20 @@ Widget _buildPlantDetails(Plant plant) {
 }
 
 double getWateringBar(Plant plant) {
-  return (DateTime.now().millisecondsSinceEpoch -
-          plant.last_watered.millisecondsSinceEpoch) /
-      (plant.water_days * 24 * 60 * 60 * 1000);
+  DateTime lastWatered = plant.last_watered;
+  DateTime now = DateTime.now();
+
+
+  int daysSinceLastWatered = now.difference(lastWatered).inDays;
+  int wateringInterval = plant.water_days;
+
+  // If the plant has not been watered for longer than its watering interval, return 0
+  if (daysSinceLastWatered >= wateringInterval) {
+    return 0.0;
+  }
+
+  // Calculate the watering level as a fraction between 0 and 1
+  double wateringLevel = 1.0 - (daysSinceLastWatered / wateringInterval);
+  wateringLevel.clamp(0, 1);
+  return wateringLevel;
 }
