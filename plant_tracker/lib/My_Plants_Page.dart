@@ -247,7 +247,7 @@ Widget _buildInfoRow(Plant plant) {
 
 Widget _buildPlantDetails(Plant plant) {
   return Container(
-    alignment: Alignment.bottomLeft,
+    alignment: Alignment.bottomCenter,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -264,19 +264,19 @@ Widget _buildPlantDetails(Plant plant) {
             ),
           ),
         ),
-        SizedBox(
-          height: 40.0,
+        Padding(
+          padding:  const EdgeInsets.all(5.0), 
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(
+              const Padding(padding: EdgeInsets.all(2.5), child: Icon(
                 Icons.access_time,
                 color: Colors.white,
-              ),
-              Text(
+              )),
+              Padding(padding: const EdgeInsets.all(2.5), child: Text(
                 plant.water_days.toString(),
                 style: const TextStyle(color: Colors.white),
-              ),
+              ),),
               Expanded(
                 child: LinearProgressIndicator(
                   value: getWateringBar(plant),
@@ -287,8 +287,8 @@ Widget _buildPlantDetails(Plant plant) {
                 ),
               ),
             ],
-          ),
-        ),
+        ),),
+        
       ],
     ),
   );
