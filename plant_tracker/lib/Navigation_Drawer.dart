@@ -18,7 +18,7 @@ class NavDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 44, 71, 22),
+              color: Color.fromARGB(255, 156, 232, 94),
             ),
             child: Column(
               children: const [
@@ -44,25 +44,25 @@ class NavDrawer extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          ListTile(
-            title: const Text('Favourite Plants'),
-            leading: const Icon(
-              Icons.favorite,
-              color: Colors.red,
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const FavouritesPage(),
-                ),
-              );
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              // Navigator.pop(context);
-            },
-          ),
+          // ListTile(
+          //   title: const Text('Favourite Plants'),
+          //   leading: const Icon(
+          //     Icons.favorite,
+          //     color: Colors.red,
+          //   ),
+          //   onTap: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => const FavouritesPage(),
+          //       ),
+          //     );
+          //     // Update the state of the app
+          //     // ...
+          //     // Then close the drawer
+          //     // Navigator.pop(context);
+          //   },
+          // ),
           ListTile(
             title: const Text('Settings'),
             leading: const Icon(

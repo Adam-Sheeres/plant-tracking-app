@@ -56,7 +56,7 @@ class Plant {
   LightLevel light_level;
   LightType light_type;
 
-  String? room;
+  String room;
 
   Plant({
     required this.plant_id,
@@ -70,8 +70,8 @@ class Plant {
     required this.imageUrl,
     required this.description,
     required this.isFavourite,
+    required this.room,
     this.note,
-    this.room,
   });
 
   factory Plant.fromJson(Map<String, dynamic> json) {
@@ -158,11 +158,6 @@ class Note {
   String note;
 
   Note({required this.dateAdded, required this.note});
-}
-
-class Room {
-  String name;
-  Room({required this.name});
 }
 
 class plantDB {
