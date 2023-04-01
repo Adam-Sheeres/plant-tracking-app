@@ -5,8 +5,11 @@ import 'package:plant_tracker/pages/add_plant_page.dart';
 import 'dart:developer';
 import '../services/notification.dart';
 import '../services/plantdb.dart';
-import '../services/Navigation_Drawer.dart';
 import 'Plant_Info_Page.dart';
+import 'package:plant_tracker/pages/settings_page.dart';
+
+
+const greenColour = Color.fromARGB(255, 140, 182, 131);
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.refreshPlantList}) : super(key: key);
@@ -57,13 +60,8 @@ class _HomePageState extends State<HomePage> {
           _plantList = snapshot.data!;
           return Scaffold(
             appBar: AppBar(
-              title: const Text("My Plants"),
-              backgroundColor: const Color.fromARGB(255, 156, 232, 94),
-              centerTitle: true,
-              titleTextStyle: const TextStyle(
-                color: Color.fromARGB(255, 0, 0, 0),
-                fontSize: 22,
-              ),
+              title: const Text("Bloom Buddy"), 
+              backgroundColor: Colors.green,
               actions: [
                 IconButton(
                   onPressed: () {
@@ -97,19 +95,37 @@ class _HomePageState extends State<HomePage> {
                               : Icons.house_outlined),
                 ),
               ],
-            ), drawer: NavDrawer(refreshPlantList: refreshPlantList),
-            body: GridView.count(
-              primary: false,
-              padding: const EdgeInsets.all(20),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              crossAxisCount: 2,
+            ),
+            backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+            body: ListView(
               children: getPlantTiles(_plantList, context),
             ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.eco),
+                  label: 'Plants',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: 'Settings',
+                ),
+              ],
+              onTap: (index) {
+                if (index == 1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsPage(refreshPlantList: refreshPlantList)),
+                  );
+                }
+              },
+            ),
+
+
             floatingActionButton:
                 getAddPlantButton(context, _plantList, db, refreshPlantList),
             floatingActionButtonLocation:
-                FloatingActionButtonLocation.endFloat,
+                FloatingActionButtonLocation.miniCenterDocked,
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -141,7 +157,7 @@ FloatingActionButton getAddPlantButton(BuildContext context, List<Plant> plantLi
       plantList = await db.getPlants();
       callback();
     },
-    backgroundColor: const Color.fromARGB(255, 156, 232, 94),
+    backgroundColor: greenColour,
     child: const Icon(Icons.add),
   );
 }
@@ -166,85 +182,73 @@ List<Widget> getPlantTiles(List<Plant> plantList, BuildContext context) {
 }
 
 Widget _buildPlantTile(BuildContext context, Plant plant) {
-  return GestureDetector(
-    onTap: () {
-      log("Moving to page ${plant.plant_name}");
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => PlantInfoPage(displayPlant: plant),
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+    child: GestureDetector(
+      onTap: () {
+        log("Moving to page ${plant.plant_name}");
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PlantInfoPage(displayPlant: plant),
+          ),
+        );
+      },
+      child: Card(
+        shadowColor: Colors.black,
+        color: greenColour,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 4,
+              height: 100,
+              child: _buildImageContainer(plant),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildInfoContainer(plant),
+              ),
+            ),
+          ],
         ),
-      );
-    },
-    child: Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Stack(
-        children: [
-          _buildImageContainer(plant),
-          _buildInfoContainer(plant),
-        ],
       ),
     ),
   );
 }
 
-
 Widget _buildImageContainer(Plant plant) {
-  return Container(
+  return 
+  Padding(padding: const EdgeInsets.all(8.0), 
+  child: Container(
+    height: 100,
+    width: 100,
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10.0),
+      borderRadius: BorderRadius.circular(20.0),
       image: DecorationImage(
         image: NetworkImage(plant.imageUrl),
-        fit: BoxFit.cover,
+        fit: BoxFit.scaleDown,
       ),
     ),
-  );
+    alignment: Alignment.center,
+  ));
 }
 
 Widget _buildInfoContainer(Plant plant) {
   return Container(
     decoration: BoxDecoration(
-      color: Colors.black.withOpacity(0.6),
-      borderRadius: BorderRadius.circular(10.0),
+
+      borderRadius: BorderRadius.circular(20.0),
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildInfoRow(plant),
         _buildPlantDetails(plant),
       ],
     ),
   );
 }
 
-Widget _buildInfoRow(Plant plant) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Container(
-        alignment: Alignment.topLeft,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            plant.room.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
-      ),
-      Container(
-        alignment: Alignment.topRight,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(
-            Icons.favorite,
-            color: plant.isFavourite ? Colors.red : Colors.white,
-          ),
-        ),
-      ),
-    ],
-  );
-}
 
 Widget _buildPlantDetails(Plant plant) {
   return Container(
@@ -253,42 +257,43 @@ Widget _buildPlantDetails(Plant plant) {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              plant.plant_name,
-              style: const TextStyle(
-                fontSize: 24.0,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding:  const EdgeInsets.all(5.0), 
+          alignment: Alignment.bottomLeft,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Padding(padding: EdgeInsets.all(2.5), child: Icon(
-                Icons.access_time,
-                color: Colors.white,
-              )),
-              Padding(padding: const EdgeInsets.all(2.5), child: Text(
-                plant.water_days.toString(),
-                style: const TextStyle(color: Colors.white),
-              ),),
-              Expanded(
-                child: LinearProgressIndicator(
-                  value: getWateringBar(plant),
-                  backgroundColor: Colors.grey,
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                    Color.fromARGB(255, 76, 222, 241),
+                  Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  plant.plant_name,
+                  style: const TextStyle(
+                    fontSize: 24.0,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
+              IconButton(onPressed: () {
+                //TODO add method to set last_watered days to today 
+              }, icon: const Icon(Icons.water_drop_outlined))
+
             ],
-        ),),
+          )
+        ),
+        Padding(
+          padding:  const EdgeInsets.all(5.0), 
+          child: Container(
+          margin: const EdgeInsets.only(top: 15.0),
+          width: 300,
+          height: 10,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            child: LinearProgressIndicator(
+              value: getWateringBar(plant),
+              valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 0, 174, 255)),
+              backgroundColor: const Color(0xffD6D6D6),
+            ),
+          ),
+        ))
         
       ],
     ),
@@ -299,21 +304,20 @@ double getWateringBar(Plant plant) {
   DateTime lastWatered = plant.last_watered;
   DateTime now = DateTime.now();
 
-
-  int daysSinceLastWatered = now.difference(lastWatered).inDays;
-  int wateringInterval = plant.water_days;
+  int hoursSinceLastWatered = now.difference(lastWatered).inHours;
+  int wateringIntervalInHours = plant.water_days * 24;
 
   // If the plant has not been watered for longer than its watering interval, return 0
   NotificationService x = NotificationService();
 
-  if (daysSinceLastWatered >= wateringInterval) {
+  if (hoursSinceLastWatered >= wateringIntervalInHours) {
     //send a notification
     x.showNotification(body: "Your ${plant.plant_name} needs some love!", title: "BloomBuddy", payLoad: "payload");
     return 0.0;
   }
 
   // Calculate the watering level as a fraction between 0 and 1
-  double wateringLevel = 1.0 - (daysSinceLastWatered / wateringInterval);
+  double wateringLevel = 1.0 - (hoursSinceLastWatered / wateringIntervalInHours);
   wateringLevel.clamp(0, 1);
   return wateringLevel;
 }
