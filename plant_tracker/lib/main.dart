@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'My_Plants_Page.dart';
+import 'pages/My_Plants_Page.dart';
 
 void main() => runApp(const MyApp());
 

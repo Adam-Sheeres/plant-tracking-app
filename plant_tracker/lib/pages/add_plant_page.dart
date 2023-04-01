@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import '../plantdb.dart';
+import '../services/plantdb.dart';
 
 // list of enums to be used for dropdown
 List<String> lightLevels = LightLevel.values.map((e) => e.name).toList();

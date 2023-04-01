@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:plant_tracker/pages/add_plant_page.dart';
 import 'dart:developer';
-import 'plantdb.dart';
-import 'Navigation_Drawer.dart';
+import '../services/notification.dart';
+import '../services/plantdb.dart';
+import '../services/Navigation_Drawer.dart';
 import 'Plant_Info_Page.dart';
 
 class HomePage extends StatefulWidget {
@@ -303,7 +304,11 @@ double getWateringBar(Plant plant) {
   int wateringInterval = plant.water_days;
 
   // If the plant has not been watered for longer than its watering interval, return 0
+  NotificationService x = NotificationService();
+
   if (daysSinceLastWatered >= wateringInterval) {
+    //send a notification
+    x.showNotification(body: "Your ${plant.plant_name} needs some love!", title: "BloomBuddy", payLoad: "payload");
     return 0.0;
   }
 
