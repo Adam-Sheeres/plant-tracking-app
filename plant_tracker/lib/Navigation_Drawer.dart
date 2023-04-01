@@ -5,7 +5,9 @@ import 'pages/settings_page.dart';
 import 'Import_Export_Page.dart';
 
 class NavDrawer extends StatelessWidget {
-  const NavDrawer({super.key});
+  final VoidCallback refreshPlantList;
+
+  const NavDrawer({Key? key, required this.refreshPlantList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -85,84 +87,18 @@ class NavDrawer extends StatelessWidget {
             leading: const Icon(
               Icons.settings,
             ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsPage()));
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              // Navigator.pop(context);
-            },
+                    onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SettingsPage(
+                      refreshPlantList: refreshPlantList)));
+          // ...
+        },
+
           ),
         ],
       ),
     );
   }
 }
-
-// Widget NavigationDrawer(BuildContext context) {
-//   return Drawer(
-//     child: SingleChildScrollView(
-//         child: Column(
-//       crossAxisAlignment: CrossAxisAlignment.stretch,
-//       children: <Widget>[
-//         BuildHeader(context),
-//         BuildMenuItems(context),
-//       ],
-//     )),
-//   );
-// }
-
-// //Header for the side menu
-// // ignore: non_constant_identifier_names
-// Widget BuildHeader(BuildContext context) => Container(
-//       color: const Color.fromARGB(255, 44, 71, 22),
-//       padding: EdgeInsets.only(top: 5),
-//       child: Column(children: const [
-//         Padding(
-//           padding: EdgeInsets.only(top: 40, bottom: 40),
-//           child: Text(
-//             "Plant Tracker",
-//             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35.0),
-//           ),
-//         )
-//       ]),
-//     );
-
-// //Builds the items inside the side menu
-// // ignore: non_constant_identifier_names
-// Widget BuildMenuItems(BuildContext context) => Column(
-//       children: [
-//         //add more kids here if need be
-//         ListTile(
-//           leading: const Icon(Icons.list_alt),
-//           title: const Text("Plants"),
-//           onTap: () {
-//             Navigator.pop(context);
-//           },
-//         ),
-//         //
-//         ListTile(
-//           leading: const Icon(
-//             Icons.favorite,
-//             color: Colors.red,
-//           ),
-//           title: const Text("Favourites"),
-//           onTap: () {
-//             Navigator.push(context,
-//                 MaterialPageRoute(builder: (context) => const SettingsPage()));
-//           },
-//         ),
-//         //SETTINGS PAGE
-//         ListTile(
-//           leading: const Icon(Icons.settings),
-//           title: const Text("Settings"),
-//           onTap: () {
-//             Navigator.push(context,
-//                 MaterialPageRoute(builder: (context) => const SettingsPage()));
-//           },
-//         ),
-//       ],
-//     );

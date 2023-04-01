@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../Navigation_Drawer.dart';
 import 'package:intl/intl.dart';
-import '../Plant_DB.dart';
+import '../plantdb.dart';
 
 // list of enums to be used for dropdown
 List<String> lightLevels = LightLevel.values.map((e) => e.name).toList();
@@ -60,8 +60,7 @@ class _AddPlantPage extends State<AddPlantPage> {
               _buildPlantName(),
               ElevatedButton(
                 onPressed: () {
-                  // Implement file importing functionality here
-                },
+                  },
                 child: const Text('Upload Image'),
               ),
               _buildDate(context),
@@ -94,9 +93,27 @@ class _AddPlantPage extends State<AddPlantPage> {
               )),
         ),
         onPressed: () {
-          // widget.db.addPlant(
-          //   Plant(), //please add the stuff for the plant from the form here, to add to the db
-          // );
+          print("HELLO??");
+                  Plant newPlant = Plant(
+                    plant_id: widget.db.plant_list.length + 1,
+                    plant_name: plantNameController.text,
+                    date_added: entryDate,
+                    water_days: int.parse(waterDaysController.text),
+                    last_watered: entryDate,
+                    water_volume: 0,
+                    light_level: LightLevel.values
+                        .firstWhere((level) => level.name == dropdownLevelValue),
+                    light_type: LightType.values
+                        .firstWhere((type) => type.name == dropdownTypeValue),
+                    imageUrl: "",
+                    description: descriptionController.text,
+                    isFavourite: false,
+                    note: [],
+                    room: null,
+                  );
+                  print("Adding plant: " + newPlant.toString());
+                  widget.db.addPlant(newPlant);
+                
           Navigator.pop(context);
         },
       ),

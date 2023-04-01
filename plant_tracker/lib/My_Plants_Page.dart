@@ -4,20 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plant_tracker/pages/add_plant_page.dart';
 import 'dart:developer';
-import 'Plant_DB.dart';
+import 'plantdb.dart';
 import 'Navigation_Drawer.dart';
 import 'Plant_Info_Page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.refreshPlantList});
+
+  final VoidCallback refreshPlantList; // Define the callback function
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
+
 class _HomePageState extends State<HomePage> {
   plantDB db = plantDB(); //init the db
   List<Plant> _plantList = [];
+
+  void refreshPlantList() async {
+    _plantList = await db.getPlants();
+    setState(() {});
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +43,7 @@ class _HomePageState extends State<HomePage> {
                 centerTitle: true,
                 titleTextStyle: const TextStyle(
                     color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
-            drawer: const NavDrawer(),
+            drawer: NavDrawer(refreshPlantList: refreshPlantList),
             body: GridView.count(
               primary: false,
               padding: const EdgeInsets.all(20),
@@ -66,7 +76,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 List<Widget> getPlantTiles(List<Plant> plant_list, BuildContext context) {
-  print(plant_list);
+  print("plant_list: " + plant_list.toString());
 
   List<Widget> tiles = [];
 

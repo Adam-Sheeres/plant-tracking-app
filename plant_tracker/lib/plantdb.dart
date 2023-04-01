@@ -121,33 +121,34 @@ class Plant {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    List<Map<String, dynamic>> noteJsonList = [];
-    if (note != null) {
-      noteJsonList = note!
-          .map((note) => {
-                'dateAdded': note.dateAdded.toIso8601String(),
-                'note': note.note,
-              })
-          .toList();
-    }
-
-    return {
-      'plant_id': plant_id,
-      'plant_name': plant_name,
-      'date_added': date_added.toIso8601String(),
-      'water_days': water_days,
-      'last_watered': last_watered.toIso8601String(),
-      'water_volume': water_volume,
-      'light_level': light_level.displayValue,
-      'light_type': light_type.displayValue,
-      'imageUrl': imageUrl,
-      'description': description,
-      'isFavourite': isFavourite,
-      'note': noteJsonList,
-      'room': room!,
-    };
+Map<String, dynamic> toJson() {
+  List<Map<String, dynamic>> noteJsonList = [];
+  if (note != null) {
+    noteJsonList = note!
+      .map((note) => {
+        'dateAdded': note.dateAdded.toIso8601String(),
+        'note': note.note,
+      })
+      .toList();
   }
+
+  return {
+    'plant_id': plant_id,
+    'plant_name': plant_name,
+    'date_added': date_added.toIso8601String(),
+    'water_days': water_days,
+    'last_watered': last_watered.toIso8601String(),
+    'water_volume': water_volume,
+    'light_level': light_level.displayValue,
+    'light_type': light_type.displayValue,
+    'imageUrl': imageUrl,
+    'description': description,
+    'isFavourite': isFavourite,
+    'note': noteJsonList,
+    'room': room,
+  };
+}
+
 }
 
 class Note {
@@ -171,15 +172,15 @@ class plantDB {
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
-
     return directory.path;
   }
 
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/plant_list.json');
-  }
+Future<File> get _localFile async {
+  final path = await _localPath;
+  return File('$path/plant_list.json');
+}
 
+//TODO complete this function
   Future<void> addNote(String plantName) async {
     List<Plant> plants = await getPlants();
   }
@@ -187,8 +188,14 @@ class plantDB {
   Future<void> addPlant(Plant newPlant) async {
     // Get the current list of plants
     List<Plant> plants = await getPlants();
-
     // Add the new plant to the plant_list
+
+
+  //set default plant image 
+    if (newPlant.imageUrl == "") {
+      newPlant.imageUrl = "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/63919/potted-plant-clipart-md.png";
+    }
+
     plants.add(newPlant);
     plant_list = plants;
 
@@ -208,16 +215,29 @@ class plantDB {
     await writePlants(plants);
   }
 
-  Future<void> writePlants(List<Plant> plants) async {
-    // Write the updated plant_list to the file
-    final file = await _localFile;
-    await file.writeAsString(jsonEncode(plants));
+  Future<void> removeAllPlants() async {
+    plant_list = [];
+    await writePlants([]);
+    
   }
+
+
+  Future<void> writePlants(List<Plant> plants) async {
+    // Convert each Plant object to a JSON-encodable Map
+    List<Map<String, dynamic>> plantJsonList =
+        plants.map((plant) => plant.toJson()).toList();
+
+    // Write the updated plantJsonList to the file
+    final file = await _localFile;
+    await file.writeAsString(jsonEncode(plantJsonList));
+  }
+
 
   Future<List<Plant>> getPlants() async {
     try {
       final file = await _localFile;
       final contents = await file.readAsString();
+
       final List<dynamic> jsonList = jsonDecode(contents);
       return jsonList.map((json) => Plant.fromJson(json)).toList();
     } catch (e) {
@@ -225,4 +245,5 @@ class plantDB {
       return [];
     }
   }
+
 }

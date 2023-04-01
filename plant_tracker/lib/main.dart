@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home:
-          HomePage(), //i guess we change this function to have different bodies?
+          HomePage(refreshPlantList: () {  },), //i guess we change this function to have different bodies?
     );
   }
 }

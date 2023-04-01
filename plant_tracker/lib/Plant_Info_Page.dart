@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:developer';
-import 'Plant_DB.dart';
+import 'plantdb.dart';
 import 'Navigation_Drawer.dart';
 
 class PlantInfoPage extends StatelessWidget {

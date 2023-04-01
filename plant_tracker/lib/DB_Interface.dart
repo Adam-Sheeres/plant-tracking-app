@@ -12,14 +12,14 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
   // Database object
-  static Database? plant_db;
+  static Database? plantdb;
 
   Future<Database> get plants async {
-    if (plant_db != null) return plant_db!;
+    if (plantdb != null) return plantdb!;
 
     // Lazily instantiate the database
-    plant_db = await _initDatabase(_databases[0]); //init the plant db
-    return plant_db!;
+    plantdb = await _initDatabase(_databases[0]); //init the plant db
+    return plantdb!;
   }
 
   // Initialize database
