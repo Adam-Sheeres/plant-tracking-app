@@ -22,7 +22,29 @@ class _HomePageState extends State<HomePage> {
 
   void refreshPlantList() async {
     _plantList = await db.getPlants();
-    setState(() {});
+    setState(() {
+      if (_sortOption == SortOption.nextToWater) {
+        _sortOption = SortOption.name;
+      } else if (_sortOption == SortOption.name) {
+        _sortOption = SortOption.dateAdded;
+      } else if (_sortOption == SortOption.dateAdded) {
+        _sortOption = SortOption.room;
+      } else {
+        _sortOption = SortOption.nextToWater;
+      }
+      _plantList.sort((a, b) {
+        switch (_sortOption) {
+          case SortOption.nextToWater:
+            return getWateringBar(a).compareTo(getWateringBar(b));
+          case SortOption.name:
+            return a.plant_name.compareTo(b.plant_name);
+          case SortOption.dateAdded:
+            return a.date_added.compareTo(b.date_added);
+          case SortOption.room:
+            return a.room.compareTo(b.room);
+        }
+      });
+    });
   }
 
   @override
@@ -34,12 +56,47 @@ class _HomePageState extends State<HomePage> {
           _plantList = snapshot.data!;
           return Scaffold(
             appBar: AppBar(
-                title: const Text("My Plants"),
-                backgroundColor: const Color.fromARGB(255, 156, 232, 94),
-                centerTitle: true,
-                titleTextStyle: const TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
-            drawer: NavDrawer(refreshPlantList: refreshPlantList),
+              title: const Text("My Plants"),
+              backgroundColor: const Color.fromARGB(255, 156, 232, 94),
+              centerTitle: true,
+              titleTextStyle: const TextStyle(
+                color: Color.fromARGB(255, 0, 0, 0),
+                fontSize: 22,
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_sortOption == SortOption.nextToWater) {
+                        _sortOption = SortOption.name;
+                      } else if (_sortOption == SortOption.name) {
+                        _sortOption = SortOption.dateAdded;
+                      } else if (_sortOption == SortOption.dateAdded) {
+                        _sortOption = SortOption.room;
+                      } else {
+                        _sortOption = SortOption.nextToWater;
+                      }
+                      _plantList.sort((a, b) {
+                        switch (_sortOption) {
+                          case SortOption.nextToWater:
+                            return getWateringBar(a).compareTo(getWateringBar(b));
+                          case SortOption.name:
+                            return a.plant_name.compareTo(b.plant_name);
+                          case SortOption.dateAdded:
+                            return a.date_added.compareTo(b.date_added);
+                          case SortOption.room:
+                            return a.room.compareTo(b.room);
+                        }
+                      });
+                    });
+                  },
+                  icon: Icon(_sortOption == SortOption.nextToWater ? Icons.water_drop_outlined
+                      : _sortOption == SortOption.name ? Icons.sort_by_alpha_outlined
+                          : _sortOption == SortOption.dateAdded ? Icons.date_range_outlined
+                              : Icons.house_outlined),
+                ),
+              ],
+            ), drawer: NavDrawer(refreshPlantList: refreshPlantList),
             body: GridView.count(
               primary: false,
               padding: const EdgeInsets.all(20),
@@ -61,6 +118,16 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+enum SortOption {
+  nextToWater,
+  name,
+  dateAdded,
+  room,
+}
+
+SortOption _sortOption = SortOption.nextToWater;
+
+
 FloatingActionButton getAddPlantButton(BuildContext context, List<Plant> plantList,
     plantDB db, VoidCallback callback) {
   return FloatingActionButton(
@@ -79,6 +146,21 @@ FloatingActionButton getAddPlantButton(BuildContext context, List<Plant> plantLi
 }
 
 List<Widget> getPlantTiles(List<Plant> plantList, BuildContext context) {
+  switch (_sortOption) {
+    case SortOption.nextToWater:
+      plantList.sort((a, b) => getWateringBar(a).compareTo(getWateringBar(b)));
+      break;
+    case SortOption.name:
+      plantList.sort((a, b) => a.plant_name.compareTo(b.plant_name));
+      break;
+    case SortOption.dateAdded:
+      plantList.sort((a, b) => a.date_added.compareTo(b.date_added));
+      break;
+    case SortOption.room:
+      plantList.sort((a, b) => a.room.compareTo(b.room));
+      break;
+  }
+
   return plantList.map((plant) => _buildPlantTile(context, plant)).toList();
 }
 
@@ -105,6 +187,7 @@ Widget _buildPlantTile(BuildContext context, Plant plant) {
     ),
   );
 }
+
 
 Widget _buildImageContainer(Plant plant) {
   return Container(
