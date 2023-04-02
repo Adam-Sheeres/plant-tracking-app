@@ -17,7 +17,7 @@ class NavDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 156, 232, 94),
+              color: Colors.green,
             ),
             child: Column(
               children: const [
