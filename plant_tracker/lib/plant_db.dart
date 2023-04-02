@@ -62,7 +62,7 @@ List<Plant> plant_list = [
     plant_name: 'Monstera',
     date_added: DateTime(2023, 9, 7, 17, 30),
     water_days: 14,
-    last_watered: DateTime(2023, 3, 2, 17, 30),
+    last_watered: DateTime(2023, 3, 22, 17, 30),
     water_volume: 12,
     light_level: LightLevel.bright,
     light_type: LightType.direct,
