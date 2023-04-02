@@ -50,7 +50,7 @@ class Plant {
   // ignore: prefer_typing_uninitialized_variables
   var water_days, water_volume, plant_id;
   DateTime date_added, last_watered;
-  bool isFavourite;
+  bool isFavourite, hasShownNotification;
   List<Note>? note;
 
   LightLevel light_level;
@@ -71,6 +71,7 @@ class Plant {
     required this.description,
     required this.isFavourite,
     required this.room,
+    required this.hasShownNotification,
     this.note,
   });
 
@@ -96,6 +97,7 @@ class Plant {
       isFavourite: json['isFavourite'],
       note: noteList,
       room: json['room'],
+      hasShownNotification: json['hasShownNotification'],
     );
   }
 
@@ -148,6 +150,7 @@ Map<String, dynamic> toJson() {
     'isFavourite': isFavourite,
     'note': noteJsonList,
     'room': room,
+    'hasShownNotification' : hasShownNotification
   };
 }
 
@@ -230,6 +233,11 @@ Future<File> get _localFile async {
     
   }
 
+  Future<void> setWatering(Plant plant) async {
+    print("watering! " + plant.plant_name);
+  }
+
+
 
   Future<void> writePlants(List<Plant> plants) async {
     // Convert each Plant object to a JSON-encodable Map
@@ -253,5 +261,6 @@ Future<File> get _localFile async {
       return [];
     }
   }
+
 
 }

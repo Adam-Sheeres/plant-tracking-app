@@ -107,7 +107,8 @@ class _AddPlantPage extends State<AddPlantPage> {
                     description: descriptionController.text,
                     isFavourite: false,
                     note: [],
-                    room: "",
+                    room: "", 
+                    hasShownNotification: false,
                   );
                   widget.db.addPlant(newPlant);
                 

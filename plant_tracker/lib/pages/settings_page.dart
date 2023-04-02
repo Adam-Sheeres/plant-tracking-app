@@ -6,6 +6,7 @@ class SettingsPage extends StatefulWidget {
 
   const SettingsPage({Key? key, required this.refreshPlantList})
       : super(key: key);
+
   @override
   State<SettingsPage> createState() => _SettingsPage();
 }
@@ -22,45 +23,94 @@ class _SettingsPage extends State<SettingsPage> {
           centerTitle: true,
           titleTextStyle: const TextStyle(
               color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
-      body:  Padding(padding: const EdgeInsets.all(10), 
-      child: Column(
-        children: [
-          buildSettingsTile(icon: Icons.mood_bad_outlined, label: "Remove all plants", 
-            onPressed: () {
-            _plantDB.removeAllPlants();
-            setState(() {});
-            widget.refreshPlantList();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('All plants removed'),
-                duration: Duration(seconds: 3),
-              ),
-            );},),
-          buildSettingsTile(icon: Icons.import_export, label: "Import", onPressed: () {}),
-          buildSettingsTile(icon: Icons.import_export, label: "Export", onPressed: () {}),
-          ]),)
-      // drawer: const NavDrawer(),
+      body: settingsBody(),
     );
   }
-}
 
-Widget buildSettingsTile({
-  required String label,
-  required IconData icon,
-  required VoidCallback onPressed,
-}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0),
-    child: ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.black, backgroundColor: Colors.grey[200], minimumSize: const Size(double.infinity, 48),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+  Widget settingsBody() {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        children: [
+          removePlant(),
+          buildSettingsTile(
+            icon: Icons.import_export,
+            label: "Import",
+            onPressed: () {},
+          ),
+          buildSettingsTile(
+            icon: Icons.import_export,
+            label: "Export",
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget removePlant() {
+    return buildSettingsTile(
+      icon: Icons.mood_bad_outlined,
+      label: "Remove all plants",
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Remove all plants?"),
+              content: const Text("Are you sure you want to remove all plants?"),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text("Cancel"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text("Remove"),
+                  onPressed: () {
+                    _plantDB.removeAllPlants();
+                    Navigator.of(context).pop();
+                    setState(() {});
+                    widget.refreshPlantList();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('All plants removed'),
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+
+  Widget buildSettingsTile({
+    required String label,
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon),
+        label: Text(label),
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.grey[200],
+          minimumSize: const Size(double.infinity, 48),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
+  }
