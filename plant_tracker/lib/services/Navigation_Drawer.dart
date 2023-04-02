@@ -43,25 +43,6 @@ class NavDrawer extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          // ListTile(
-          //   title: const Text('Favourite Plants'),
-          //   leading: const Icon(
-          //     Icons.favorite,
-          //     color: Colors.red,
-          //   ),
-          //   onTap: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) => const FavouritesPage(),
-          //       ),
-          //     );
-          //     // Update the state of the app
-          //     // ...
-          //     // Then close the drawer
-          //     // Navigator.pop(context);
-          //   },
-          // ),
           ListTile(
             title: const Text('Settings'),
             leading: const Icon(
@@ -73,9 +54,7 @@ class NavDrawer extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => SettingsPage(
                       refreshPlantList: refreshPlantList)));
-          // ...
         },
-
           ),
         ],
       ),

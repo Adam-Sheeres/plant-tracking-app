@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:plant_tracker/pages/add_plant_page.dart';
 import 'dart:developer';
+import '../services/Navigation_Drawer.dart';
 import '../services/notification.dart';
 import '../services/plantdb.dart';
 import 'Plant_Info_Page.dart';
@@ -98,28 +99,11 @@ Widget getBody() {
             ),
             backgroundColor: const Color.fromARGB(255, 240, 240, 240),
             body: getBody(),
-            bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.eco),
-                  label: 'Plants',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: 'Settings',
-                ),
-              ],
-              currentIndex: _selectedIndex,
-              onTap: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-            ),
+            drawer: NavDrawer(refreshPlantList: () {  },),
             floatingActionButton:
                 getAddPlantButton(context, _plantList, db, refreshPlantList),
             floatingActionButtonLocation:
-                FloatingActionButtonLocation.miniCenterDocked,
+                FloatingActionButtonLocation.centerFloat,
           );
         } else {
           return const Center(child: CircularProgressIndicator());
