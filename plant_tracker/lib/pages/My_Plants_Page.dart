@@ -2,12 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:plant_tracker/pages/add_plant_page.dart';
-import 'dart:developer';
 import '../services/Navigation_Drawer.dart';
 import '../services/notification.dart';
 import 'package:plant_tracker/plant_db.dart';
 import 'Plant_Info_Page.dart';
-import 'dart:math';
 
 const greenColour = Color.fromARGB(255, 140, 182, 131);
 
@@ -31,8 +29,6 @@ class _HomePageState extends State<HomePage> {
   plant_db db = plant_db();
   List<Plant> _plantList = [];
 
-  late GlobalKey<AnimatedListState> _animatedListKey;
-  late AnimationController _controller;
 
   void refreshPlantList() async {
     _plantList = await db.getPlants();
