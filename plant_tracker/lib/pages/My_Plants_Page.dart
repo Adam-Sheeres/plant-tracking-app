@@ -7,8 +7,6 @@ import '../services/Navigation_Drawer.dart';
 import '../services/notification.dart';
 import 'package:plant_tracker/plant_db.dart';
 import 'Plant_Info_Page.dart';
-import 'package:plant_tracker/pages/settings_page.dart';
-
 
 const greenColour = Color.fromARGB(255, 140, 182, 131);
 
@@ -20,6 +18,7 @@ enum SortOption {
 }
 
 SortOption _sortOption = SortOption.nextToWater;
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.refreshPlantList}) : super(key: key);
   final VoidCallback refreshPlantList;
@@ -30,29 +29,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   plant_db db = plant_db();
   List<Plant> _plantList = [];
-  int _selectedIndex = 0;
 
   void refreshPlantList() async {
+    print("Refreshing the plant list");
     _plantList = await db.getPlants();
     setState(() {
       // sorting logic here
     });
   }
-
-Widget getSettingsBody(plant_db db) {
-  return SettingsPage(refreshPlantList: refreshPlantList);
-}
-
-Widget getBody() {
-    if (_selectedIndex == 0) {
-      return ListView(
-        children: getPlantTiles(_plantList, context),
-      );
-    } else {
-      return getSettingsBody(db);
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,39 +51,39 @@ Widget getBody() {
               backgroundColor: Colors.green,
               actions: [
                 IconButton(
-                onPressed: () {
-                  setState(() {
-                    switch (_sortOption) {
-                      case SortOption.nextToWater:
-                        _sortOption = SortOption.name;
-                        break;
-                      case SortOption.name:
-                        _sortOption = SortOption.dateAdded;
-                        break;
-                      case SortOption.dateAdded:
-                        _sortOption = SortOption.room;
-                        break;
-                      case SortOption.room:
-                        _sortOption = SortOption.nextToWater;
-                        break;
-                    }
-                  });
-                },
-                icon: Icon(
-                  _sortOption == SortOption.nextToWater
+                  onPressed: () {
+                    setState(() {
+                      switch (_sortOption) {
+                        case SortOption.nextToWater:
+                          _sortOption = SortOption.name;
+                          break;
+                        case SortOption.name:
+                          _sortOption = SortOption.dateAdded;
+                          break;
+                        case SortOption.dateAdded:
+                          _sortOption = SortOption.room;
+                          break;
+                        case SortOption.room:
+                          _sortOption = SortOption.nextToWater;
+                          break;
+                      }
+                    });
+                  },
+                  icon: Icon(_sortOption == SortOption.nextToWater
                       ? Icons.water_drop_outlined
                       : _sortOption == SortOption.name
                           ? Icons.sort_by_alpha_outlined
                           : _sortOption == SortOption.dateAdded
                               ? Icons.date_range_outlined
                               : Icons.house_outlined),
-              ),
-
+                ),
               ],
             ),
             backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-            body: getBody(),
-            drawer: NavDrawer(refreshPlantList: () {  },),
+            body: getPlantTiles(_plantList, context),
+            drawer: NavDrawer(
+              refreshPlantList: refreshPlantList,
+            ),
             floatingActionButton:
                 getAddPlantButton(context, _plantList, db, refreshPlantList),
             floatingActionButtonLocation:
@@ -112,8 +96,8 @@ Widget getBody() {
     );
   }
 
-  FloatingActionButton getAddPlantButton(BuildContext context, List<Plant> plantList,
-      plant_db db, VoidCallback callback) {
+  FloatingActionButton getAddPlantButton(BuildContext context,
+      List<Plant> plantList, plant_db db, VoidCallback callback) {
     return FloatingActionButton(
       onPressed: () async {
         await Navigator.push(
@@ -129,10 +113,11 @@ Widget getBody() {
     );
   }
 
-  List<Widget> getPlantTiles(List<Plant> plantList, BuildContext context) {
+  ListView getPlantTiles(List<Plant> plantList, BuildContext context) {
     switch (_sortOption) {
       case SortOption.nextToWater:
-        plantList.sort((a, b) => getWateringBar(a).compareTo(getWateringBar(b)));
+        plantList
+            .sort((a, b) => getWateringBar(a).compareTo(getWateringBar(b)));
         break;
       case SortOption.name:
         plantList.sort((a, b) => a.plant_name.compareTo(b.plant_name));
@@ -145,7 +130,12 @@ Widget getBody() {
         break;
     }
 
-    return plantList.map((plant) => _buildPlantTile(context, plant)).toList();
+    return ListView.builder(
+      itemCount: plantList.length,
+      itemBuilder: (context, index) {
+        return _buildPlantTile(context, plantList[index]);
+      },
+    );
   }
 
   Widget _buildPlantTile(BuildContext context, Plant plant) {
@@ -184,28 +174,26 @@ Widget getBody() {
     );
   }
 
-
   Widget _buildImageContainer(Plant plant) {
-    return 
-    Padding(padding: const EdgeInsets.all(8.0), 
-    child: Container(
-      height: 100,
-      width: 100,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.0),
-        image: DecorationImage(
-          image: NetworkImage(plant.imageUrl),
-          fit: BoxFit.scaleDown,
-        ),
-      ),
-      alignment: Alignment.center,
-    ));
+    return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          height: 100,
+          width: 100,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            image: DecorationImage(
+              image: NetworkImage(plant.imageUrl),
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+          alignment: Alignment.center,
+        ));
   }
 
   Widget _buildInfoContainer(Plant plant) {
     return Container(
       decoration: BoxDecoration(
-
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: Column(
@@ -217,7 +205,6 @@ Widget getBody() {
     );
   }
 
-
   Widget _buildPlantDetails(Plant plant) {
     return Container(
       alignment: Alignment.bottomCenter,
@@ -225,49 +212,48 @@ Widget getBody() {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Align(
-            alignment: Alignment.bottomLeft,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                    Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    plant.plant_name,
-                    style: const TextStyle(
-                      fontSize: 24.0,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+              alignment: Alignment.bottomLeft,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      plant.plant_name,
+                      style: const TextStyle(
+                        fontSize: 24.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                IconButton(onPressed: () {
-                  db.setWatering(plant);
-                }, icon: const Icon(Icons.water_drop_outlined))
-
-              ],
-            )
-          ),
+                  IconButton(
+                      onPressed: () {
+                        db.setWatering(plant);
+                      },
+                      icon: const Icon(Icons.water_drop_outlined))
+                ],
+              )),
           Padding(
-            padding:  const EdgeInsets.all(5.0), 
-            child: Container(
-            margin: const EdgeInsets.only(top: 15.0),
-            width: 300,
-            height: 10,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              child: LinearProgressIndicator(
-                value: getWateringBar(plant),
-                valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 0, 174, 255)),
-                backgroundColor: const Color(0xffD6D6D6),
-              ),
-            ),
-          ))
-          
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                margin: const EdgeInsets.only(top: 15.0),
+                width: 300,
+                height: 10,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  child: LinearProgressIndicator(
+                    value: getWateringBar(plant),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                        Color.fromARGB(255, 0, 174, 255)),
+                    backgroundColor: const Color(0xffD6D6D6),
+                  ),
+                ),
+              ))
         ],
       ),
     );
   }
-
 
   double getWateringBar(Plant plant) {
     DateTime lastWatered = plant.last_watered;
@@ -282,14 +268,18 @@ Widget getBody() {
     if (hoursSinceLastWatered >= wateringIntervalInHours) {
       //send a notification
       if (!plant.hasShownNotification) {
-        x.showNotification(body: "Your ${plant.plant_name} needs some love!", title: "BloomBuddy", payLoad: "payload");
+        x.showNotification(
+            body: "Your ${plant.plant_name} needs some love!",
+            title: "BloomBuddy",
+            payLoad: "payload");
         plant.hasShownNotification = true;
       }
       return 0.0;
     }
 
     // Calculate the watering level as a fraction between 0 and 1
-    double wateringLevel = 1.0 - (hoursSinceLastWatered / wateringIntervalInHours);
+    double wateringLevel =
+        1.0 - (hoursSinceLastWatered / wateringIntervalInHours);
     wateringLevel.clamp(0, 1);
     return wateringLevel;
   }

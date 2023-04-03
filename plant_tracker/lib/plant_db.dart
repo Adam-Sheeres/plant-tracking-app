@@ -37,14 +37,6 @@ extension LightTypeExtension on LightType {
   }
 }
 
-// class Note {
-//   String note;
-//   DateTime timeAdded;
-//   String plantName;
-
-//   Note({required this.note, required this.timeAdded, required this.plantName});
-// }
-
 class Plant {
   String plant_name, description, imageUrl;
   // ignore: prefer_typing_uninitialized_variables
@@ -95,9 +87,9 @@ class Plant {
       imageUrl: json['imageUrl'],
       description: json['description'],
       isFavourite: json['isFavourite'],
-      note: noteList,
       room: json['room'],
       hasShownNotification: json['hasShownNotification'],
+      note: noteList,
     );
   }
 
@@ -125,34 +117,35 @@ class Plant {
     }
   }
 
-Map<String, dynamic> toJson() {
-  List<Map<String, dynamic>> noteJsonList = [];
-  if (note != null) {
-    noteJsonList = note!
-      .map((note) => {
-        'dateAdded': note.dateAdded.toIso8601String(),
-        'note': note.note,
-      })
-      .toList();
+  Map<String, dynamic> toJson() {
+    List<Map<String, dynamic>> noteJsonList = [];
+    if (note != null) {
+      noteJsonList = note!
+        .map((note) => {
+          'dateAdded': note.dateAdded.toIso8601String(),
+          'note': note.note,
+        })
+        .toList();
+    }
+
+    return {
+      'plant_id': plant_id,
+      'plant_name': plant_name,
+      'date_added': date_added.toIso8601String(),
+      'water_days': water_days,
+      'last_watered': last_watered.toIso8601String(),
+      'water_volume': water_volume,
+      'light_level': light_level.displayValue,
+      'light_type': light_type.displayValue,
+      'imageUrl': imageUrl,
+      'description': description,
+      'isFavourite': isFavourite,
+      'note': noteJsonList,
+      'room': room,
+      'hasShownNotification' : hasShownNotification
+    };
   }
 
-  return {
-    'plant_id': plant_id,
-    'plant_name': plant_name,
-    'date_added': date_added.toIso8601String(),
-    'water_days': water_days,
-    'last_watered': last_watered.toIso8601String(),
-    'water_volume': water_volume,
-    'light_level': light_level.displayValue,
-    'light_type': light_type.displayValue,
-    'imageUrl': imageUrl,
-    'description': description,
-    'isFavourite': isFavourite,
-    'note': noteJsonList,
-    'room': room,
-    'hasShownNotification' : hasShownNotification
-  };
-}
 
 }
 
@@ -161,7 +154,22 @@ class Note {
   String note;
 
   Note({required this.dateAdded, required this.note});
+
+  factory Note.fromJson(Map<String, dynamic> json) {
+    return Note(
+      dateAdded: DateTime.parse(json['dateAdded']),
+      note: json['note'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'dateAdded': dateAdded.toIso8601String(),
+      'note': note,
+    };
+  }
 }
+
 
 class plant_db {
   List<Plant> plant_list = [];
@@ -233,12 +241,18 @@ Future<File> get _localFile async {
     
   }
 
-  Future<void> setWatering(Plant plant) async {
-    print("watering! " + plant.plant_name);
+    Future<void> setWatering(Plant plant) async {
+    // Water the plant and update the last_watered date
     plant.last_watered = DateTime.now();
+
+    // Write the updated plant to the file
+    List<Plant> plants = await getPlants();
+    int index = plants.indexWhere((p) => p.plant_id == plant.plant_id);
+    if (index != -1) {
+      plants[index] = plant;
+      await writePlants(plants);
+    }
   }
-
-
 
   Future<void> writePlants(List<Plant> plants) async {
     // Convert each Plant object to a JSON-encodable Map

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 //import '../services/plantdb.dart';
 import 'package:plant_tracker/plant_db.dart';
 import 'package:intl/intl.dart';
-import 'dart:developer';
-import '../services/Navigation_Drawer.dart';
 import '../services/notification.dart';
 
 class PlantInfoPage extends StatelessWidget {
@@ -43,9 +41,9 @@ class PlantInfoPage extends StatelessWidget {
                     ),
                     Card(
                       color: const Color.fromRGBO(255, 255, 255, 1),
-                      margin: EdgeInsets.all(0.0),
+                      margin: const EdgeInsets.all(0.0),
                       child: Padding(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -106,7 +104,7 @@ class PlantInfoPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                                 children: [
-                                  TextSpan(text: DateFormat.yMMMd().format(displayPlant.last_watered), style: TextStyle(fontWeight: FontWeight.normal)),
+                                  TextSpan(text: DateFormat.yMMMd().format(displayPlant.last_watered), style: const TextStyle(fontWeight: FontWeight.normal)),
                                 ],
                               ),
                             ),
@@ -120,7 +118,7 @@ class PlantInfoPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                                 children: [
-                                  TextSpan(text: theRoom(displayPlant), style: TextStyle(fontWeight: FontWeight.normal)),
+                                  TextSpan(text: theRoom(displayPlant), style: const TextStyle(fontWeight: FontWeight.normal)),
                                 ],
                               ),
                             ),
@@ -132,7 +130,7 @@ class PlantInfoPage extends StatelessWidget {
                               children: [
                                 Card(
                                   shadowColor: Colors.black,
-                                  color: Color.fromARGB(255, 76, 222, 241),
+                                  color: const Color.fromARGB(255, 76, 222, 241),
                                   child: Column(
                                     children: [
                                       Container(
@@ -140,7 +138,7 @@ class PlantInfoPage extends StatelessWidget {
                                         height: 50,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(20.0),
-                                          image: DecorationImage(
+                                          image: const DecorationImage(
                                             image: NetworkImage('https://cdn.shopify.com/s/files/1/1061/1924/products/Sweat_Water_Emoji_1024x1024.png?v=1571606064'),
                                             fit: BoxFit.scaleDown,
                                           ),
@@ -148,7 +146,7 @@ class PlantInfoPage extends StatelessWidget {
                                         alignment: Alignment.center,
                                       ),
                                       Text(
-                                        displayPlant.water_volume.toString() + " ml",
+                                        "${displayPlant.water_volume} ml",
                                         textAlign: TextAlign.center,
                                       )
                                     ],
@@ -164,7 +162,7 @@ class PlantInfoPage extends StatelessWidget {
                                         height: 50,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(20.0),
-                                          image: DecorationImage(
+                                          image: const DecorationImage(
                                             image: NetworkImage('https://em-content.zobj.net/thumbs/160/apple/81/electric-light-bulb_1f4a1.png'),
                                             fit: BoxFit.scaleDown,
                                           ),
@@ -188,7 +186,7 @@ class PlantInfoPage extends StatelessWidget {
                                         height: 50,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(20.0),
-                                          image: DecorationImage(
+                                          image: const DecorationImage(
                                             image: NetworkImage('https://images.emojiterra.com/twitter/v13.1/512px/1f506.png'),
                                             fit: BoxFit.scaleDown,
                                           ),
@@ -209,7 +207,7 @@ class PlantInfoPage extends StatelessWidget {
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
+                              children: const [
 
                               ],
                             ),
@@ -222,6 +220,7 @@ class PlantInfoPage extends StatelessWidget {
                               ),
                               textAlign: TextAlign.start,
                             ),
+                            //TODO: Add a note caller here 
                             /*Text(
                               displayPlant.note.note,
                               style: const TextStyle(

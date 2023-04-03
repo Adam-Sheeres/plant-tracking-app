@@ -12,6 +12,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPage extends State<SettingsPage> {
+  // ignore: non_constant_identifier_names
   final _plant_db = plant_db();
 
   @override
@@ -72,8 +73,8 @@ class _SettingsPage extends State<SettingsPage> {
                   onPressed: () {
                     _plant_db.removeAllPlants();
                     Navigator.of(context).pop();
-                    setState(() {});
                     widget.refreshPlantList();
+                    setState(() {});
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('All plants removed'),
