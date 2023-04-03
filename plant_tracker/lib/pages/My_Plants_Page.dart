@@ -5,7 +5,7 @@ import 'package:plant_tracker/pages/add_plant_page.dart';
 import 'dart:developer';
 import '../services/Navigation_Drawer.dart';
 import '../services/notification.dart';
-import '../services/plantdb.dart';
+import 'package:plant_tracker/plant_db.dart';
 import 'Plant_Info_Page.dart';
 import 'package:plant_tracker/pages/settings_page.dart';
 
@@ -28,7 +28,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  plantDB db = plantDB();
+  plant_db db = plant_db();
   List<Plant> _plantList = [];
   int _selectedIndex = 0;
 
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-Widget getSettingsBody(plantDB db) {
+Widget getSettingsBody(plant_db db) {
   return SettingsPage(refreshPlantList: refreshPlantList);
 }
 
@@ -113,14 +113,14 @@ Widget getBody() {
   }
 
   FloatingActionButton getAddPlantButton(BuildContext context, List<Plant> plantList,
-      plantDB db, VoidCallback callback) {
+      plant_db db, VoidCallback callback) {
     return FloatingActionButton(
       onPressed: () async {
         await Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    AddPlantPage(db: plantDB(), key: UniqueKey())));
+                    AddPlantPage(db: plant_db(), key: UniqueKey())));
         plantList = await db.getPlants();
         callback();
       },

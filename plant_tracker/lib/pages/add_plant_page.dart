@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import '../services/plantdb.dart';
+import 'package:plant_tracker/plant_db.dart';
 
 // list of enums to be used for dropdown
 List<String> lightLevels = LightLevel.values.map((e) => e.name).toList();
 List<String> lightTypes = LightType.values.map((e) => e.name).toList();
 
 class AddPlantPage extends StatefulWidget {
-  final plantDB db;
+  final plant_db db;
 
   const AddPlantPage({required this.db, Key? key}) : super(key: key);
 

@@ -2,9 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:developer';
 import 'package:plant_tracker/plant_db.dart';
-import 'My_Plants_Page.dart';
 
 class PlantInfoPage extends StatelessWidget {
   Plant displayPlant;
@@ -112,7 +110,7 @@ class PlantInfoPage extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                     children: [
-                                      TextSpan(text: displayPlant.room!.name, style: TextStyle(fontWeight: FontWeight.normal)),
+                                      TextSpan(text: displayPlant.room, style: TextStyle(fontWeight: FontWeight.normal)),
                                     ],
                                   ),
                                 ),
@@ -170,7 +168,7 @@ class PlantInfoPage extends StatelessWidget {
                               textAlign: TextAlign.start,
                             ),
                             Text(
-                              displayPlant.note.note,
+                              displayPlant.note.toString(),
                               style: const TextStyle(
                                 fontSize: 18,
                                 color: Colors.black,

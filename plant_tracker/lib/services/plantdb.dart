@@ -163,7 +163,7 @@ class Note {
   Note({required this.dateAdded, required this.note});
 }
 
-class plantDB {
+class plant_db {
   List<Plant> plant_list = [];
 
   List<Plant> getList() {

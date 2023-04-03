@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/plantdb.dart';
+import 'package:plant_tracker/plant_db.dart';
 
 class SettingsPage extends StatefulWidget {
   final VoidCallback refreshPlantList;
@@ -12,7 +12,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPage extends State<SettingsPage> {
-  final _plantDB = plantDB();
+  final _plant_db = plant_db();
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class _SettingsPage extends State<SettingsPage> {
                 TextButton(
                   child: const Text("Remove"),
                   onPressed: () {
-                    _plantDB.removeAllPlants();
+                    _plant_db.removeAllPlants();
                     Navigator.of(context).pop();
                     setState(() {});
                     widget.refreshPlantList();
