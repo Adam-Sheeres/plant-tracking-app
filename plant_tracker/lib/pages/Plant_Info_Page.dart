@@ -61,24 +61,31 @@ class PlantInfoPage extends StatelessWidget {
                                     fontSize: 40,
                                   ),
                                 ),
-                                IconButton(onPressed: () {
-                                  db.setWatering(displayPlant);
-                                }, icon: const Icon(Icons.water_drop_outlined))
+                                IconButton(
+                                    onPressed: () {
+                                      db.setWatering(displayPlant);
+                                    },
+                                    icon: const Icon(Icons.water_drop_outlined))
                               ],
                             ),
                             SizedBox(
                               height: 40.0, // add a height to the container
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Expanded(
                                     child: ClipRRect(
-                                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
                                       child: LinearProgressIndicator(
-                                        value: getWateringBar(displayPlant), // This should be a value between 0.0 and 1.0
+                                        value: getWateringBar(
+                                            displayPlant), // This should be a value between 0.0 and 1.0
                                         backgroundColor: Colors.grey,
-                                        valueColor: const AlwaysStoppedAnimation<Color>(
-                                            Color.fromARGB(255, 76, 222, 241)),
+                                        valueColor:
+                                            const AlwaysStoppedAnimation<Color>(
+                                                Color.fromARGB(
+                                                    255, 76, 222, 241)),
                                       ),
                                     ),
                                   ),
@@ -91,7 +98,8 @@ class PlantInfoPage extends StatelessWidget {
                             Text(
                               displayPlant.description,
                               textAlign: TextAlign.left,
-                              style: const TextStyle(fontSize: 18, color: Colors.black),
+                              style: const TextStyle(
+                                  fontSize: 18, color: Colors.black),
                             ),
                             const SizedBox(
                               height: 20,
@@ -106,7 +114,11 @@ class PlantInfoPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                                 children: [
-                                  TextSpan(text: DateFormat.yMMMd().format(displayPlant.last_watered), style: TextStyle(fontWeight: FontWeight.normal)),
+                                  TextSpan(
+                                      text: DateFormat.yMMMd()
+                                          .format(displayPlant.last_watered),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.normal)),
                                 ],
                               ),
                             ),
@@ -120,7 +132,10 @@ class PlantInfoPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                                 children: [
-                                  TextSpan(text: theRoom(displayPlant), style: TextStyle(fontWeight: FontWeight.normal)),
+                                  TextSpan(
+                                      text: theRoom(displayPlant),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.normal)),
                                 ],
                               ),
                             ),
@@ -136,19 +151,24 @@ class PlantInfoPage extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       Container(
-                                        width: MediaQuery.of(context).size.width / 4,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4,
                                         height: 50,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20.0),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
                                           image: DecorationImage(
-                                            image: NetworkImage('https://cdn.shopify.com/s/files/1/1061/1924/products/Sweat_Water_Emoji_1024x1024.png?v=1571606064'),
+                                            image: NetworkImage(
+                                                'https://cdn.shopify.com/s/files/1/1061/1924/products/Sweat_Water_Emoji_1024x1024.png?v=1571606064'),
                                             fit: BoxFit.scaleDown,
                                           ),
                                         ),
                                         alignment: Alignment.center,
                                       ),
                                       Text(
-                                        displayPlant.water_volume.toString() + " ml",
+                                        displayPlant.water_volume.toString() +
+                                            " ml",
                                         textAlign: TextAlign.center,
                                       )
                                     ],
@@ -160,12 +180,16 @@ class PlantInfoPage extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       Container(
-                                        width: MediaQuery.of(context).size.width / 4,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4,
                                         height: 50,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20.0),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
                                           image: DecorationImage(
-                                            image: NetworkImage('https://em-content.zobj.net/thumbs/160/apple/81/electric-light-bulb_1f4a1.png'),
+                                            image: NetworkImage(
+                                                'https://em-content.zobj.net/thumbs/160/apple/81/electric-light-bulb_1f4a1.png'),
                                             fit: BoxFit.scaleDown,
                                           ),
                                         ),
@@ -184,12 +208,16 @@ class PlantInfoPage extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       Container(
-                                        width: MediaQuery.of(context).size.width / 4,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4,
                                         height: 50,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20.0),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
                                           image: DecorationImage(
-                                            image: NetworkImage('https://images.emojiterra.com/twitter/v13.1/512px/1f506.png'),
+                                            image: NetworkImage(
+                                                'https://images.emojiterra.com/twitter/v13.1/512px/1f506.png'),
                                             fit: BoxFit.scaleDown,
                                           ),
                                         ),
@@ -209,9 +237,7 @@ class PlantInfoPage extends StatelessWidget {
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-
-                              ],
+                              children: [],
                             ),
                             const Text(
                               "Note",
@@ -271,25 +297,27 @@ class PlantInfoPage extends StatelessWidget {
     if (hoursSinceLastWatered >= wateringIntervalInHours) {
       //send a notification
       if (!plant.hasShownNotification) {
-        x.showNotification(body: "Your ${plant.plant_name} needs some love!", title: "BloomBuddy", payLoad: "payload");
+        x.showNotification(
+            body: "Your ${plant.plant_name} needs some love!",
+            title: "BloomBuddy",
+            payLoad: "payload");
         plant.hasShownNotification = true;
       }
       return 0.0;
     }
 
     // Calculate the watering level as a fraction between 0 and 1
-    double wateringLevel = 1.0 - (hoursSinceLastWatered / wateringIntervalInHours);
+    double wateringLevel =
+        1.0 - (hoursSinceLastWatered / wateringIntervalInHours);
     wateringLevel.clamp(0, 1);
     return wateringLevel;
   }
 
-  String theRoom(Plant plant){
-    if(plant.room == ""){
+  String theRoom(Plant plant) {
+    if (plant.room == "") {
       return "No room";
-    }
-    else{
+    } else {
       return plant.room;
     }
   }
 }
-

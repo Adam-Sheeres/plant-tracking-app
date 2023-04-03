@@ -6,7 +6,6 @@ import 'package:path_provider/path_provider.dart';
 
 enum LightLevel { dark, medium, bright }
 
-
 extension LightLevelExtension on LightLevel {
   String get displayValue {
     switch (this) {
@@ -125,35 +124,34 @@ class Plant {
     }
   }
 
-Map<String, dynamic> toJson() {
-  List<Map<String, dynamic>> noteJsonList = [];
-  if (note != null) {
-    noteJsonList = note!
-      .map((note) => {
-        'dateAdded': note.dateAdded.toIso8601String(),
-        'note': note.note,
-      })
-      .toList();
+  Map<String, dynamic> toJson() {
+    List<Map<String, dynamic>> noteJsonList = [];
+    if (note != null) {
+      noteJsonList = note!
+          .map((note) => {
+                'dateAdded': note.dateAdded.toIso8601String(),
+                'note': note.note,
+              })
+          .toList();
+    }
+
+    return {
+      'plant_id': plant_id,
+      'plant_name': plant_name,
+      'date_added': date_added.toIso8601String(),
+      'water_days': water_days,
+      'last_watered': last_watered.toIso8601String(),
+      'water_volume': water_volume,
+      'light_level': light_level.displayValue,
+      'light_type': light_type.displayValue,
+      'imageUrl': imageUrl,
+      'description': description,
+      'isFavourite': isFavourite,
+      'note': noteJsonList,
+      'room': room,
+      'hasShownNotification': hasShownNotification
+    };
   }
-
-  return {
-    'plant_id': plant_id,
-    'plant_name': plant_name,
-    'date_added': date_added.toIso8601String(),
-    'water_days': water_days,
-    'last_watered': last_watered.toIso8601String(),
-    'water_volume': water_volume,
-    'light_level': light_level.displayValue,
-    'light_type': light_type.displayValue,
-    'imageUrl': imageUrl,
-    'description': description,
-    'isFavourite': isFavourite,
-    'note': noteJsonList,
-    'room': room,
-    'hasShownNotification' : hasShownNotification
-  };
-}
-
 }
 
 class Note {
@@ -175,16 +173,17 @@ class plant_db {
     return directory.path;
   }
 
-Future<File> get _localFile async {
-  final path = await _localPath;
-  return File('$path/plant_list.json');
-}
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/plant_list.json');
+  }
 
   Future<void> addNote(String plantName, Note newNote) async {
     List<Plant> plants = await getPlants();
 
     // Find the plant with the given name
-    int plantIndex = plants.indexWhere((plant) => plant.plant_name == plantName);
+    int plantIndex =
+        plants.indexWhere((plant) => plant.plant_name == plantName);
 
     // If the plant is found, add the new note to its list of notes
     if (plantIndex != -1) {
@@ -196,16 +195,15 @@ Future<File> get _localFile async {
     }
   }
 
-
   Future<void> addPlant(Plant newPlant) async {
     // Get the current list of plants
     List<Plant> plants = await getPlants();
     // Add the new plant to the plant_list
 
-
-  //set default plant image 
+    //set default plant image
     if (newPlant.imageUrl == "") {
-      newPlant.imageUrl = "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/63919/potted-plant-clipart-md.png";
+      newPlant.imageUrl =
+          "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/63919/potted-plant-clipart-md.png";
     }
 
     plants.add(newPlant);
@@ -230,15 +228,12 @@ Future<File> get _localFile async {
   Future<void> removeAllPlants() async {
     plant_list = [];
     await writePlants([]);
-    
   }
 
   Future<void> setWatering(Plant plant) async {
     print("watering! " + plant.plant_name);
     plant.last_watered = DateTime.now();
   }
-
-
 
   Future<void> writePlants(List<Plant> plants) async {
     // Convert each Plant object to a JSON-encodable Map
@@ -249,7 +244,6 @@ Future<File> get _localFile async {
     final file = await _localFile;
     await file.writeAsString(jsonEncode(plantJsonList));
   }
-
 
   Future<List<Plant>> getPlants() async {
     try {
@@ -262,6 +256,4 @@ Future<File> get _localFile async {
       return [];
     }
   }
-
-
 }

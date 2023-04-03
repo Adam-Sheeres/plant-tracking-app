@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:plant_tracker/plant_db.dart';
+import 'package:image_picker/image_picker.dart';
 
 // list of enums to be used for dropdown
 List<String> lightLevels = LightLevel.values.map((e) => e.name).toList();
@@ -17,6 +20,25 @@ class AddPlantPage extends StatefulWidget {
 }
 
 class _AddPlantPage extends State<AddPlantPage> {
+  XFile? image;
+  final ImagePicker picker = ImagePicker();
+
+  String base64Image = "";
+
+  late Uint8List imageBytes;
+
+  Future getImage(ImageSource media) async {
+    var img = await picker.pickImage(source: media);
+
+    setState(() {
+      image = img;
+    });
+
+    Uint8List imagebyte = await image!.readAsBytes();
+    base64Image = base64Encode(imagebyte);
+    print(base64Image);
+  }
+
   // setting initial dropdown value
   String dropdownLevelValue = lightLevels.first;
   String dropdownTypeValue = lightTypes.first;
@@ -56,8 +78,8 @@ class _AddPlantPage extends State<AddPlantPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             //mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              _buildPlantName(),
               _buildUploadImage(),
+              _buildPlantName(),
               _buildDate(context),
               _buildWaterDays(),
               _buildDescription(),
@@ -329,21 +351,51 @@ class _AddPlantPage extends State<AddPlantPage> {
     );
   }
 
-  ElevatedButton _buildUploadImage() {
-    return ElevatedButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) => _buildImagePopup(context),
-        );
-      },
-      child: const Text('Upload Image'),
+  Center _buildUploadImage() {
+    return Center(
+      child: Column(
+        children: [
+          image != null
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.file(
+                      //to show image, you type like this.
+                      File(image!.path),
+                      fit: BoxFit.cover,
+                      width: MediaQuery.of(context).size.width,
+                      height: 300,
+                    ),
+                  ),
+                )
+              : const Text(
+                  " ",
+                  style: TextStyle(fontSize: 20),
+                ),
+          const SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => _buildImagePopup(context),
+              );
+            },
+            child: const Text('Upload Image'),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildImagePopup(BuildContext context) {
     return AlertDialog(
-      title: const Text('Please choose media to select'),
+      title: const Text(
+        'Select Media',
+        textAlign: TextAlign.center,
+      ),
       content: Container(
         height: MediaQuery.of(context).size.height / 6,
         child: Column(
@@ -352,7 +404,7 @@ class _AddPlantPage extends State<AddPlantPage> {
               //if user click this button, user can upload image from gallery
               onPressed: () {
                 Navigator.pop(context);
-                // getImage(ImageSource.gallery);
+                getImage(ImageSource.gallery);
               },
               child: Row(
                 children: [
@@ -366,7 +418,7 @@ class _AddPlantPage extends State<AddPlantPage> {
               //if user click this button. user can upload image from camera
               onPressed: () {
                 Navigator.pop(context);
-                // getImage(ImageSource.camera);
+                getImage(ImageSource.camera);
               },
               child: Row(
                 children: [
@@ -379,6 +431,14 @@ class _AddPlantPage extends State<AddPlantPage> {
           ],
         ),
       ),
+      // actions: <Widget>[
+      //   TextButton(
+      //     onPressed: () {
+      //       Navigator.of(context).pop();
+      //     },
+      //     child: const Text('Close'),
+      //   ),
+      // ],
     );
   }
 
