@@ -1,8 +1,6 @@
 // ignore: file_names
 import 'dart:convert';
 
-import 'dart:js_util';
-
 import 'package:flutter/material.dart';
 import 'package:plant_tracker/plant_db.dart';
 import 'package:intl/intl.dart';
@@ -264,32 +262,32 @@ class PlantInfoPage extends StatelessWidget {
                                 textAlign: TextAlign.start,
                               ),
                               Flexible(
-                                  child: ListView.builder(
-                                      itemCount: noteLength(displayPlant),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Date added: ${displayPlant.note![index].dateAdded}',
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                  displayPlant
-                                                      .note![index].note,
-                                                  style: const TextStyle(
-                                                      fontSize: 16.0)),
-                                            ],
-                                          ),
-                                        );
-                                      })),
+                                child: ListView.builder(
+                                    itemCount: noteLength(displayPlant),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Date added: ${displayPlant.note[index].dateAdded}',
+                                              style: const TextStyle(
+                                                  fontWeight:
+                                                      FontWeight.bold),
+                                            ),
+                                    Text(
+                                        displayPlant
+                                            .note[index].note,
+                                        style: const TextStyle(
+                                            fontSize: 16.0)),
+                                      ],
+                                    ),
+                                  );
+                                })),
                               const SizedBox(
                                 height: 20,
                               ),
@@ -319,7 +317,6 @@ class PlantInfoPage extends StatelessWidget {
       ),
     );
   }
-
   double getWateringBar(Plant plant) {
     DateTime lastWatered = plant.last_watered;
     DateTime now = DateTime.now();
@@ -358,7 +355,7 @@ class PlantInfoPage extends StatelessWidget {
   }
   
   int noteLength(Plant plant) {
-    final notes = plant.note!;
+    final notes = plant.note;
     return notes.length;
   }
 }
