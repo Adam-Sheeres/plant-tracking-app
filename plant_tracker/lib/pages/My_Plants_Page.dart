@@ -7,6 +7,7 @@ import '../services/Navigation_Drawer.dart';
 import '../services/notification.dart';
 import 'package:plant_tracker/plant_db.dart';
 import 'Plant_Info_Page.dart';
+import 'dart:math';
 
 const greenColour = Color.fromARGB(255, 140, 182, 131);
 
@@ -30,12 +31,12 @@ class _HomePageState extends State<HomePage> {
   plant_db db = plant_db();
   List<Plant> _plantList = [];
 
+  late GlobalKey<AnimatedListState> _animatedListKey;
+  late AnimationController _controller;
+
   void refreshPlantList() async {
-    print("Refreshing the plant list");
     _plantList = await db.getPlants();
-    setState(() {
-      // sorting logic here
-    });
+    setState(() {});
   }
 
   @override
@@ -43,10 +44,12 @@ class _HomePageState extends State<HomePage> {
     return FutureBuilder<List<Plant>>(
       future: db.getPlants(),
       builder: (BuildContext context, AsyncSnapshot<List<Plant>> snapshot) {
+        _plantList = snapshot.data!;
         if (snapshot.connectionState == ConnectionState.done) {
-          _plantList = snapshot.data!;
-          return Scaffold(
-            appBar: AppBar(
+        return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: AppBar(
               title: const Text("Bloom Buddy"),
               backgroundColor: Colors.green,
               actions: [
@@ -79,18 +82,65 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-            body: getPlantTiles(_plantList, context),
-            drawer: NavDrawer(
-              refreshPlantList: refreshPlantList,
-            ),
-            floatingActionButton:
-                getAddPlantButton(context, _plantList, db, refreshPlantList),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
-          );
+          ),
+          backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+          body: getPlantTiles(_plantList, context),
+          drawer: NavDrawer(
+            refreshPlantList: refreshPlantList,
+          ),
+          floatingActionButton:
+              getAddPlantButton(context, _plantList, db, refreshPlantList),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        );
         } else {
-          return const Center(child: CircularProgressIndicator());
+                  return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: AppBar(
+              title: const Text("Bloom Buddy"),
+              backgroundColor: Colors.green,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      switch (_sortOption) {
+                        case SortOption.nextToWater:
+                          _sortOption = SortOption.name;
+                          break;
+                        case SortOption.name:
+                          _sortOption = SortOption.dateAdded;
+                          break;
+                        case SortOption.dateAdded:
+                          _sortOption = SortOption.room;
+                          break;
+                        case SortOption.room:
+                          _sortOption = SortOption.nextToWater;
+                          break;
+                      }
+                    });
+                  },
+                  icon: Icon(_sortOption == SortOption.nextToWater
+                      ? Icons.water_drop_outlined
+                      : _sortOption == SortOption.name
+                          ? Icons.sort_by_alpha_outlined
+                          : _sortOption == SortOption.dateAdded
+                              ? Icons.date_range_outlined
+                              : Icons.house_outlined),
+                ),
+              ],
+            ),
+          ),
+          backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+          body: getPlantTiles(_plantList, context),
+          drawer: NavDrawer(
+            refreshPlantList: refreshPlantList,
+          ),
+          floatingActionButton:
+              getAddPlantButton(context, _plantList, db, refreshPlantList),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        );
         }
       },
     );
@@ -113,7 +163,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  ListView getPlantTiles(List<Plant> plantList, BuildContext context) {
+  AnimatedList getPlantTiles(List<Plant> plantList, BuildContext context) {
     switch (_sortOption) {
       case SortOption.nextToWater:
         plantList
@@ -130,11 +180,14 @@ class _HomePageState extends State<HomePage> {
         break;
     }
 
-    return ListView.builder(
-      itemCount: plantList.length,
-      itemBuilder: (context, index) {
-        return _buildPlantTile(context, plantList[index]);
+    return AnimatedList(
+      itemBuilder: (context, index, animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: _buildPlantTile(context, plantList[index]),
+        );
       },
+      initialItemCount: plantList.length,
     );
   }
 
@@ -143,7 +196,6 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: GestureDetector(
         onTap: () {
-          log("Moving to page ${plant.plant_name}");
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => PlantInfoPage(displayPlant: plant),
@@ -229,7 +281,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   IconButton(
                       onPressed: () {
-                        db.setWatering(plant);
+                        db
+                            .setWatering(plant)
+                            .then((value) => refreshPlantList());
                       },
                       icon: const Icon(Icons.water_drop_outlined))
                 ],

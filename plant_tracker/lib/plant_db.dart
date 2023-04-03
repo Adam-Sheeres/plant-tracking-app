@@ -40,7 +40,7 @@ extension LightTypeExtension on LightType {
 class Plant {
   String plant_name, description, imageUrl;
   // ignore: prefer_typing_uninitialized_variables
-  var water_days, water_volume, plant_id;
+  int water_days, water_volume, plant_id;
   DateTime date_added, last_watered;
   bool isFavourite, hasShownNotification;
   List<Note>? note;
@@ -205,7 +205,7 @@ Future<File> get _localFile async {
   }
 
 
-  Future<void> addPlant(Plant newPlant) async {
+  Future<bool> addPlant(Plant newPlant) async {
     // Get the current list of plants
     List<Plant> plants = await getPlants();
     // Add the new plant to the plant_list
@@ -220,7 +220,7 @@ Future<File> get _localFile async {
     plant_list = plants;
 
     // Write the updated plant_list to a file
-    await writePlants(plants);
+    return writePlants(plants);
   }
 
   Future<void> removePlant(int plantIndex) async {
@@ -241,20 +241,24 @@ Future<File> get _localFile async {
     
   }
 
-    Future<void> setWatering(Plant plant) async {
+    Future<bool> setWatering(Plant plant) async {
     // Water the plant and update the last_watered date
+    // ignore: avoid_print
+    print("${plant.last_watered} -> ${DateTime.now()}");
     plant.last_watered = DateTime.now();
 
     // Write the updated plant to the file
     List<Plant> plants = await getPlants();
-    int index = plants.indexWhere((p) => p.plant_id == plant.plant_id);
+    int index = plants.indexWhere((p) => p.plant_name == plant.plant_name);
     if (index != -1) {
       plants[index] = plant;
-      await writePlants(plants);
+      return await writePlants(plants);
     }
+    // ignore: avoid_print
+    return false;
   }
 
-  Future<void> writePlants(List<Plant> plants) async {
+  Future<bool> writePlants(List<Plant> plants) async {
     // Convert each Plant object to a JSON-encodable Map
     List<Map<String, dynamic>> plantJsonList =
         plants.map((plant) => plant.toJson()).toList();
@@ -262,6 +266,7 @@ Future<File> get _localFile async {
     // Write the updated plantJsonList to the file
     final file = await _localFile;
     await file.writeAsString(jsonEncode(plantJsonList));
+    return true;
   }
 
 
