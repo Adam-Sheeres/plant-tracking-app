@@ -120,14 +120,12 @@ class Plant {
 
   Map<String, dynamic> toJson() {
     List<Map<String, dynamic>> noteJsonList = [];
-    if (note != null) {
-      noteJsonList = note!
-        .map((note) => {
-          'dateAdded': note.dateAdded.toIso8601String(),
-          'note': note.note,
-        })
-        .toList();
-    }
+    noteJsonList = note
+      .map((note) => {
+        'dateAdded': note.dateAdded.toIso8601String(),
+        'note': note.note,
+      })
+      .toList();
 
     return {
       'plant_id': plant_id,
@@ -198,8 +196,7 @@ class plant_db {
 
     // If the plant is found, add the new note to its list of notes
     if (plantIndex != -1) {
-      plants[plantIndex].note ??= [];
-      plants[plantIndex].note!.add(newNote);
+      plants[plantIndex].note.add(newNote);
 
       // Write the updated plant_list to a file
       await writePlants(plants);

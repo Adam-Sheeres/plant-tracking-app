@@ -261,33 +261,9 @@ class PlantInfoPage extends StatelessWidget {
                                 ),
                                 textAlign: TextAlign.start,
                               ),
-                              Flexible(
-                                child: ListView.builder(
-                                    itemCount: noteLength(displayPlant),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Date added: ${displayPlant.note[index].dateAdded}',
-                                              style: const TextStyle(
-                                                  fontWeight:
-                                                      FontWeight.bold),
-                                            ),
-                                    Text(
-                                        displayPlant
-                                            .note[index].note,
-                                        style: const TextStyle(
-                                            fontSize: 16.0)),
-                                      ],
-                                    ),
-                                  );
-                                })),
+                              Card(
+                                child: getNotesAsListView(displayPlant)
+                              ),
                               const SizedBox(
                                 height: 20,
                               ),
@@ -296,18 +272,6 @@ class PlantInfoPage extends StatelessWidget {
                         }),
                       ),
                     ),
-
-                    /*Consumer<AttractionModel>(builder: (context, aModel, _) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          aModel.addAttraction(attraction);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("Attraction added to schedule."),
-                          ));
-                        }, 
-                        child: Text("Add"),
-                      );
-                    }),*/
                   ],
                 ),
               ),
@@ -317,6 +281,26 @@ class PlantInfoPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget getNotesAsListView(Plant displayPlant) {
+    List<Note> notes = displayPlant.note;
+    
+    if (notes.isEmpty) return Container();
+
+    return ListView.builder(
+    itemCount: notes.length,
+    itemBuilder: (context, index) {
+      final note = notes[index];
+      return ListTile(
+        title: Text(note.note),
+        subtitle: Text(note.dateAdded.toString()),
+      );
+    },
+    );
+  }
+
+
+
   double getWateringBar(Plant plant) {
     DateTime lastWatered = plant.last_watered;
     DateTime now = DateTime.now();
