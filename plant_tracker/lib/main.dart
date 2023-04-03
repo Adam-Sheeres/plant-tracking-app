@@ -3,6 +3,9 @@ import 'pages/My_Plants_Page.dart';
 
 void main() => runApp(const MyApp());
 
+//to compile on to the phone, run:
+// flutter run --release
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

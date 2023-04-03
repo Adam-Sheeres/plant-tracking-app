@@ -40,8 +40,57 @@ class _HomePageState extends State<HomePage> {
     return FutureBuilder<List<Plant>>(
       future: db.getPlants(),
       builder: (BuildContext context, AsyncSnapshot<List<Plant>> snapshot) {
-        _plantList = snapshot.data!;
         if (snapshot.connectionState == ConnectionState.done) {
+        _plantList = snapshot.data!;
+        return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: AppBar(
+              title: const Text("Bloom Buddy"),
+              backgroundColor: Colors.green,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      switch (_sortOption) {
+                        case SortOption.nextToWater:
+                          _sortOption = SortOption.name;
+                          break;
+                        case SortOption.name:
+                          _sortOption = SortOption.dateAdded;
+                          break;
+                        case SortOption.dateAdded:
+                          _sortOption = SortOption.room;
+                          break;
+                        case SortOption.room:
+                          _sortOption = SortOption.nextToWater;
+                          break;
+                      }
+                    });
+                  },
+                  icon: Icon(_sortOption == SortOption.nextToWater
+                      ? Icons.water_drop_outlined
+                      : _sortOption == SortOption.name
+                          ? Icons.sort_by_alpha_outlined
+                          : _sortOption == SortOption.dateAdded
+                              ? Icons.date_range_outlined
+                              : Icons.house_outlined),
+                ),
+              ],
+            ),
+          ),
+          backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+          body: getPlantTiles(_plantList, context),
+          drawer: NavDrawer(
+            refreshPlantList: refreshPlantList,
+          ),
+          floatingActionButton:
+              getAddPlantButton(context, _plantList, db, refreshPlantList),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        );
+        } else if (snapshot.data != null) {
+        _plantList = snapshot.data!;
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
@@ -90,53 +139,7 @@ class _HomePageState extends State<HomePage> {
               FloatingActionButtonLocation.centerFloat,
         );
         } else {
-                  return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: AppBar(
-              title: const Text("Bloom Buddy"),
-              backgroundColor: Colors.green,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      switch (_sortOption) {
-                        case SortOption.nextToWater:
-                          _sortOption = SortOption.name;
-                          break;
-                        case SortOption.name:
-                          _sortOption = SortOption.dateAdded;
-                          break;
-                        case SortOption.dateAdded:
-                          _sortOption = SortOption.room;
-                          break;
-                        case SortOption.room:
-                          _sortOption = SortOption.nextToWater;
-                          break;
-                      }
-                    });
-                  },
-                  icon: Icon(_sortOption == SortOption.nextToWater
-                      ? Icons.water_drop_outlined
-                      : _sortOption == SortOption.name
-                          ? Icons.sort_by_alpha_outlined
-                          : _sortOption == SortOption.dateAdded
-                              ? Icons.date_range_outlined
-                              : Icons.house_outlined),
-                ),
-              ],
-            ),
-          ),
-          backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-          body: getPlantTiles(_plantList, context),
-          drawer: NavDrawer(
-            refreshPlantList: refreshPlantList,
-          ),
-          floatingActionButton:
-              getAddPlantButton(context, _plantList, db, refreshPlantList),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-        );
+          return const CircularProgressIndicator();
         }
       },
     );
