@@ -20,6 +20,7 @@ class AddPlantPage extends StatefulWidget {
 }
 
 class _AddPlantPage extends State<AddPlantPage> {
+  // image picking
   XFile? image;
   final ImagePicker picker = ImagePicker();
 
@@ -36,7 +37,6 @@ class _AddPlantPage extends State<AddPlantPage> {
 
     Uint8List imagebyte = await image!.readAsBytes();
     base64Image = base64Encode(imagebyte);
-    print(base64Image);
   }
 
   // setting initial dropdown value
@@ -126,6 +126,8 @@ class _AddPlantPage extends State<AddPlantPage> {
                   _buildMissingFieldsPopup(context),
             );
           } else {
+            // plant_db db = plant_db();
+            // List<Plant> plantList = db.getList();
             Plant newPlant = Plant(
               plant_id: widget.db.plant_list.length + 1,
               plant_name: plantNameController.text,
@@ -145,6 +147,8 @@ class _AddPlantPage extends State<AddPlantPage> {
               hasShownNotification: false,
             );
             widget.db.addPlant(newPlant);
+
+            print(newPlant.plant_id);
 
             Navigator.pop(context);
           }
@@ -464,11 +468,11 @@ class _AddPlantPage extends State<AddPlantPage> {
                 getImage(ImageSource.gallery);
               },
               child: Row(
-                children: [
-                  const Icon(Icons.image),
-                  const Text('  Gallery'),
-                ],
                 mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.image),
+                  Text('  Gallery'),
+                ],
               ),
             ),
             ElevatedButton(
@@ -478,11 +482,11 @@ class _AddPlantPage extends State<AddPlantPage> {
                 getImage(ImageSource.camera);
               },
               child: Row(
-                children: [
-                  const Icon(Icons.camera),
-                  const Text('  Camera'),
-                ],
                 mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.camera),
+                  Text('  Camera'),
+                ],
               ),
             ),
           ],
