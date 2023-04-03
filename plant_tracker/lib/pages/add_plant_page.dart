@@ -354,7 +354,7 @@ class _AddPlantPage extends State<AddPlantPage> {
           // Light Level dropdown
           Column(
             children: [
-              Text(
+              const Text(
                 "Light Level",
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
@@ -388,7 +388,7 @@ class _AddPlantPage extends State<AddPlantPage> {
           // Light Type dropdown (direct/indirect)
           Column(
             children: [
-              Text(
+              const Text(
                 "Light Type",
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
