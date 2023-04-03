@@ -34,12 +34,12 @@ class _SettingsPage extends State<SettingsPage> {
         children: [
           removePlant(),
           buildSettingsTile(
-            icon: Icons.import_export,
+            icon: Icons.download,
             label: "Import",
             onPressed: () {},
           ),
           buildSettingsTile(
-            icon: Icons.import_export,
+            icon: Icons.upload,
             label: "Export",
             onPressed: () {},
           ),
@@ -47,7 +47,6 @@ class _SettingsPage extends State<SettingsPage> {
       ),
     );
   }
-
 
   Widget removePlant() {
     return buildSettingsTile(
@@ -59,7 +58,8 @@ class _SettingsPage extends State<SettingsPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text("Remove all plants?"),
-              content: const Text("Are you sure you want to remove all plants?"),
+              content:
+                  const Text("Are you sure you want to remove all plants?"),
               actions: <Widget>[
                 TextButton(
                   child: const Text("Cancel"),
@@ -90,7 +90,6 @@ class _SettingsPage extends State<SettingsPage> {
     );
   }
 
-
   Widget buildSettingsTile({
     required String label,
     required IconData icon,
@@ -113,4 +112,4 @@ class _SettingsPage extends State<SettingsPage> {
       ),
     );
   }
-  }
+}

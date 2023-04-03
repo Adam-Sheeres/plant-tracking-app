@@ -57,11 +57,7 @@ class _AddPlantPage extends State<AddPlantPage> {
             //mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               _buildPlantName(),
-              ElevatedButton(
-                onPressed: () {
-                  },
-                child: const Text('Upload Image'),
-              ),
+              _buildUploadImage(),
               _buildDate(context),
               _buildWaterDays(),
               _buildDescription(),
@@ -92,27 +88,36 @@ class _AddPlantPage extends State<AddPlantPage> {
               )),
         ),
         onPressed: () {
-                  Plant newPlant = Plant(
-                    plant_id: widget.db.plant_list.length + 1,
-                    plant_name: plantNameController.text,
-                    date_added: entryDate,
-                    water_days: int.parse(waterDaysController.text),
-                    last_watered: entryDate,
-                    water_volume: 0,
-                    light_level: LightLevel.values
-                        .firstWhere((level) => level.name == dropdownLevelValue),
-                    light_type: LightType.values
-                        .firstWhere((type) => type.name == dropdownTypeValue),
-                    imageUrl: "",
-                    description: descriptionController.text,
-                    isFavourite: false,
-                    note: [],
-                    room: "", 
-                    hasShownNotification: false,
-                  );
-                  widget.db.addPlant(newPlant);
-                
-          Navigator.pop(context);
+          if (plantNameController.text.isEmpty ||
+              waterDaysController.text.isEmpty) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) =>
+                  _buildMissingFieldsPopup(context),
+            );
+          } else {
+            Plant newPlant = Plant(
+              plant_id: widget.db.plant_list.length + 1,
+              plant_name: plantNameController.text,
+              date_added: entryDate,
+              water_days: int.parse(waterDaysController.text),
+              last_watered: entryDate,
+              water_volume: 0,
+              light_level: LightLevel.values
+                  .firstWhere((level) => level.name == dropdownLevelValue),
+              light_type: LightType.values
+                  .firstWhere((type) => type.name == dropdownTypeValue),
+              imageUrl: "",
+              description: descriptionController.text,
+              isFavourite: false,
+              note: [],
+              room: "",
+              hasShownNotification: false,
+            );
+            widget.db.addPlant(newPlant);
+
+            Navigator.pop(context);
+          }
         },
       ),
     );
@@ -319,6 +324,81 @@ class _AddPlantPage extends State<AddPlantPage> {
               child: Text(value),
             );
           }).toList(),
+        ),
+      ],
+    );
+  }
+
+  ElevatedButton _buildUploadImage() {
+    return ElevatedButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => _buildImagePopup(context),
+        );
+      },
+      child: const Text('Upload Image'),
+    );
+  }
+
+  Widget _buildImagePopup(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Please choose media to select'),
+      content: Container(
+        height: MediaQuery.of(context).size.height / 6,
+        child: Column(
+          children: [
+            ElevatedButton(
+              //if user click this button, user can upload image from gallery
+              onPressed: () {
+                Navigator.pop(context);
+                // getImage(ImageSource.gallery);
+              },
+              child: Row(
+                children: [
+                  const Icon(Icons.image),
+                  const Text('  Gallery'),
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            ),
+            ElevatedButton(
+              //if user click this button. user can upload image from camera
+              onPressed: () {
+                Navigator.pop(context);
+                // getImage(ImageSource.camera);
+              },
+              child: Row(
+                children: [
+                  const Icon(Icons.camera),
+                  const Text('  Camera'),
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMissingFieldsPopup(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Missing Fields!'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const Text(
+              "Unable to add plant, please enter the name and watering days."),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
         ),
       ],
     );
