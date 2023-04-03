@@ -1,7 +1,8 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import '../services/plantdb.dart';
+//import '../services/plantdb.dart';
+import 'package:plant_tracker/plant_db.dart';
 import 'package:intl/intl.dart';
 import 'dart:developer';
 import '../services/Navigation_Drawer.dart';
@@ -9,7 +10,7 @@ import '../services/notification.dart';
 
 class PlantInfoPage extends StatelessWidget {
   Plant displayPlant;
-  plantDB db = plantDB();
+  plant_db db = plant_db();
   PlantInfoPage({super.key, required this.displayPlant});
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class PlantInfoPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Plant Details"),
         elevation: 0,
-        backgroundColor: const Color.fromARGB(255, 44, 71, 22),
+        backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(
         child: Stack(
@@ -70,15 +71,15 @@ class PlantInfoPage extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  const Icon(Icons.access_time, color: Colors.black),
-                                  Text((displayPlant.water_days).toString(),
-                                      style: const TextStyle(color: Colors.black)),
                                   Expanded(
-                                    child: LinearProgressIndicator(
-                                      value: getWateringBar(displayPlant), // This should be a value between 0.0 and 1.0
-                                      backgroundColor: Colors.grey,
-                                      valueColor: const AlwaysStoppedAnimation<Color>(
-                                          Color.fromARGB(255, 76, 222, 241)),
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                      child: LinearProgressIndicator(
+                                        value: getWateringBar(displayPlant), // This should be a value between 0.0 and 1.0
+                                        backgroundColor: Colors.grey,
+                                        valueColor: const AlwaysStoppedAnimation<Color>(
+                                            Color.fromARGB(255, 76, 222, 241)),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -95,67 +96,109 @@ class PlantInfoPage extends StatelessWidget {
                             const SizedBox(
                               height: 20,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text.rich(
-                                  textAlign: TextAlign.left,
-                                  TextSpan(
-                                    text: "Watered: ",
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    children: [
-                                      TextSpan(text: DateFormat.yMMMd().format(displayPlant.last_watered), style: TextStyle(fontWeight: FontWeight.normal)),
-                                    ],
-                                  ),
+                            Text.rich(
+                              textAlign: TextAlign.left,
+                              TextSpan(
+                                text: "Last Watered: ",
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                Text.rich(
-                                  textAlign: TextAlign.right,
-                                  TextSpan(
-                                    text: "Room: ",
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    children: [
-                                      TextSpan(text: displayPlant.room, style: TextStyle(fontWeight: FontWeight.normal)),
-                                    ],
-                                  ),
+                                children: [
+                                  TextSpan(text: DateFormat.yMMMd().format(displayPlant.last_watered), style: TextStyle(fontWeight: FontWeight.normal)),
+                                ],
+                              ),
+                            ),
+                            Text.rich(
+                              textAlign: TextAlign.left,
+                              TextSpan(
+                                text: "Room: ",
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              ],
+                                children: [
+                                  TextSpan(text: theRoom(displayPlant), style: TextStyle(fontWeight: FontWeight.normal)),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text.rich(
-                                  textAlign: TextAlign.left,
-                                  TextSpan(
-                                    text: "Light Type: ",
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                Card(
+                                  shadowColor: Colors.black,
+                                  color: Color.fromARGB(255, 76, 222, 241),
+                                  child: Column(
                                     children: [
-                                      TextSpan(text: displayPlant.light_type.name, style: TextStyle(fontWeight: FontWeight.normal)),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width / 4,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          image: DecorationImage(
+                                            image: NetworkImage('https://cdn.shopify.com/s/files/1/1061/1924/products/Sweat_Water_Emoji_1024x1024.png?v=1571606064'),
+                                            fit: BoxFit.scaleDown,
+                                          ),
+                                        ),
+                                        alignment: Alignment.center,
+                                      ),
+                                      Text(
+                                        displayPlant.water_volume.toString() + " ml",
+                                        textAlign: TextAlign.center,
+                                      )
                                     ],
                                   ),
                                 ),
-                                Text.rich(
-                                  textAlign: TextAlign.right,
-                                  TextSpan(
-                                    text: "Light Level: ",
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                Card(
+                                  shadowColor: Colors.black,
+                                  color: Colors.yellow,
+                                  child: Column(
                                     children: [
-                                      TextSpan(text: displayPlant.light_level.name, style: TextStyle(fontWeight: FontWeight.normal)),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width / 4,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          image: DecorationImage(
+                                            image: NetworkImage('https://em-content.zobj.net/thumbs/160/apple/81/electric-light-bulb_1f4a1.png'),
+                                            fit: BoxFit.scaleDown,
+                                          ),
+                                        ),
+                                        alignment: Alignment.center,
+                                      ),
+                                      Text(
+                                        displayPlant.light_type.displayValue,
+                                        textAlign: TextAlign.center,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Card(
+                                  shadowColor: Colors.black,
+                                  color: Colors.grey,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width / 4,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          image: DecorationImage(
+                                            image: NetworkImage('https://images.emojiterra.com/twitter/v13.1/512px/1f506.png'),
+                                            fit: BoxFit.scaleDown,
+                                          ),
+                                        ),
+                                        alignment: Alignment.center,
+                                      ),
+                                      Text(
+                                        displayPlant.light_level.displayValue,
+                                        textAlign: TextAlign.center,
+                                      )
                                     ],
                                   ),
                                 ),
@@ -238,6 +281,15 @@ class PlantInfoPage extends StatelessWidget {
     double wateringLevel = 1.0 - (hoursSinceLastWatered / wateringIntervalInHours);
     wateringLevel.clamp(0, 1);
     return wateringLevel;
+  }
+
+  String theRoom(Plant plant){
+    if(plant.room == ""){
+      return "No room";
+    }
+    else{
+      return plant.room;
+    }
   }
 }
 

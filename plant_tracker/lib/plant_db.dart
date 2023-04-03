@@ -235,6 +235,7 @@ Future<File> get _localFile async {
 
   Future<void> setWatering(Plant plant) async {
     print("watering! " + plant.plant_name);
+    plant.last_watered = DateTime.now();
   }
 
 
