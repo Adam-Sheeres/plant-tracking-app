@@ -48,6 +48,7 @@ class _AddPlantPage extends State<AddPlantPage> {
   TextEditingController plantNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController waterDaysController = TextEditingController();
+  TextEditingController roomController = TextEditingController();
 
   DateTime entryDate = DateTime.now();
 
@@ -82,9 +83,13 @@ class _AddPlantPage extends State<AddPlantPage> {
               _buildPlantName(),
               _buildDate(context),
               _buildWaterDays(),
+              _buildRoom(),
               _buildDescription(),
               _buildLightInfo(),
               _buildButton(context),
+              const SizedBox(
+                height: 10,
+              ),
             ],
           ),
         ),
@@ -100,7 +105,7 @@ class _AddPlantPage extends State<AddPlantPage> {
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
-          side: const BorderSide(color: Color.fromARGB(255, 156, 232, 94)),
+          // side: const BorderSide(color: Color.fromARGB(255, 156, 232, 94)),
         ))),
         child: const Padding(
           padding: EdgeInsets.all(8.0),
@@ -110,6 +115,9 @@ class _AddPlantPage extends State<AddPlantPage> {
               )),
         ),
         onPressed: () {
+          // imageBytes = base64Decode(base64Image);
+          // Image byteImage = Image.memory(imageBytes);
+          // print(imageBytes);
           if (plantNameController.text.isEmpty ||
               waterDaysController.text.isEmpty) {
             showDialog(
@@ -129,7 +137,7 @@ class _AddPlantPage extends State<AddPlantPage> {
                   .firstWhere((level) => level.name == dropdownLevelValue),
               light_type: LightType.values
                   .firstWhere((type) => type.name == dropdownTypeValue),
-              imageUrl: "",
+              imageUrl: base64Image,
               description: descriptionController.text,
               isFavourite: false,
               note: [],
@@ -217,6 +225,36 @@ class _AddPlantPage extends State<AddPlantPage> {
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Enter name of plant to be added!',
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column _buildRoom() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            'Room: ',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            controller: roomController,
+            maxLines: 1,
+            minLines: 1,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Enter the room that this plant is placed in',
             ),
           ),
         ),
@@ -356,35 +394,54 @@ class _AddPlantPage extends State<AddPlantPage> {
       child: Column(
         children: [
           image != null
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.file(
-                      //to show image, you type like this.
-                      File(image!.path),
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.width,
-                      height: 300,
+              ? InkWell(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(
+                        //to show image, you type like this.
+                        File(image!.path),
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width,
+                        height: 300,
+                      ),
                     ),
                   ),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          _buildImagePopup(context),
+                    );
+                  },
                 )
-              : const Text(
-                  " ",
-                  style: TextStyle(fontSize: 20),
+              : ElevatedButton.icon(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          _buildImagePopup(context),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.image,
+                    size: 24,
+                  ),
+                  label: const Text('Upload Image'),
                 ),
-          const SizedBox(
-            height: 10,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) => _buildImagePopup(context),
-              );
-            },
-            child: const Text('Upload Image'),
-          ),
+          // const SizedBox(
+          //   height: 10,
+          // ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     showDialog(
+          //       context: context,
+          //       builder: (BuildContext context) => _buildImagePopup(context),
+          //     );
+          //   },
+          //   child: const Text('Upload Image'),
+          // ),
         ],
       ),
     );

@@ -1,5 +1,7 @@
 // ignore_for_file: file_names, library_private_types_in_public_api
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:plant_tracker/pages/add_plant_page.dart';
 import 'dart:developer';
@@ -185,6 +187,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildImageContainer(Plant plant) {
+    // var imgMem = Image.memory(base64Decode(plant.imageUrl));
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -193,7 +196,7 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
             image: DecorationImage(
-              image: NetworkImage(plant.imageUrl),
+              image: MemoryImage(base64Decode(plant.imageUrl)),
               fit: BoxFit.scaleDown,
             ),
           ),

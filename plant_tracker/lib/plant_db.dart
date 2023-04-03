@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 enum LightLevel { dark, medium, bright }
 
@@ -202,8 +203,10 @@ class plant_db {
 
     //set default plant image
     if (newPlant.imageUrl == "") {
-      newPlant.imageUrl =
-          "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/63919/potted-plant-clipart-md.png";
+      http.Response response = await http.get(Uri.parse(
+          "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/63919/potted-plant-clipart-md.png"));
+      String base64Image = base64Encode(response.bodyBytes);
+      newPlant.imageUrl = base64Image;
     }
 
     plants.add(newPlant);

@@ -1,5 +1,7 @@
 // ignore_for_file: file_names, must_be_immutable
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 //import '../services/plantdb.dart';
 import 'package:plant_tracker/plant_db.dart';
@@ -33,8 +35,8 @@ class PlantInfoPage extends StatelessWidget {
                   children: [
                     Hero(
                       tag: displayPlant.plant_name,
-                      child: Image.network(
-                        displayPlant.imageUrl,
+                      child: Image.memory(
+                        base64Decode(displayPlant.imageUrl),
                         fit: BoxFit.fitWidth,
                         height: 400.0,
                         width: double.infinity,
