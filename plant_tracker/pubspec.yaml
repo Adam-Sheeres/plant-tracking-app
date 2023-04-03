@@ -42,6 +42,8 @@ dependencies:
 
   flutter_local_notifications: ^13.0.0
 
+  image_picker: ^0.8.7+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -58,8 +60,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-  assets: 
-    - assets/images/
+  # assets: 
+  #   - assets/images/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

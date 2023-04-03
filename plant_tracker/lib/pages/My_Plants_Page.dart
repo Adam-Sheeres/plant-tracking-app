@@ -1,11 +1,14 @@
 // ignore_for_file: file_names, library_private_types_in_public_api
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:plant_tracker/pages/add_plant_page.dart';
 import '../services/Navigation_Drawer.dart';
 import '../services/notification.dart';
 import 'package:plant_tracker/plant_db.dart';
 import 'Plant_Info_Page.dart';
+import 'package:plant_tracker/pages/settings_page.dart';
 
 const greenColour = Color.fromARGB(255, 140, 182, 131);
 
@@ -33,6 +36,10 @@ class _HomePageState extends State<HomePage> {
   void refreshPlantList() async {
     _plantList = await db.getPlants();
     setState(() {});
+  }
+
+  Widget getSettingsBody(plant_db db) {
+    return SettingsPage(refreshPlantList: refreshPlantList);
   }
 
   @override
@@ -223,6 +230,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildImageContainer(Plant plant) {
+    // var imgMem = Image.memory(base64Decode(plant.imageUrl));
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -231,7 +239,7 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
             image: DecorationImage(
-              image: NetworkImage(plant.imageUrl),
+              image: MemoryImage(base64Decode(plant.imageUrl)),
               fit: BoxFit.scaleDown,
             ),
           ),

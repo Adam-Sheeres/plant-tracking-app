@@ -3,9 +3,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 enum LightLevel { dark, medium, bright }
-
 
 extension LightLevelExtension on LightLevel {
   String get displayValue {
@@ -183,16 +183,17 @@ class plant_db {
     return directory.path;
   }
 
-Future<File> get _localFile async {
-  final path = await _localPath;
-  return File('$path/plant_list.json');
-}
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/plant_list.json');
+  }
 
   Future<void> addNote(String plantName, Note newNote) async {
     List<Plant> plants = await getPlants();
 
     // Find the plant with the given name
-    int plantIndex = plants.indexWhere((plant) => plant.plant_name == plantName);
+    int plantIndex =
+        plants.indexWhere((plant) => plant.plant_name == plantName);
 
     // If the plant is found, add the new note to its list of notes
     if (plantIndex != -1) {
@@ -210,11 +211,18 @@ Future<File> get _localFile async {
     List<Plant> plants = await getPlants();
     // Add the new plant to the plant_list
 
-
-  //set default plant image 
+    //set default plant image
     if (newPlant.imageUrl == "") {
-      newPlant.imageUrl = "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/63919/potted-plant-clipart-md.png";
+      http.Response response = await http.get(Uri.parse(
+          "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/63919/potted-plant-clipart-md.png"));
+      String base64Image = base64Encode(response.bodyBytes);
+      newPlant.imageUrl = base64Image;
     }
+
+    print("new id: ");
+    print(plants.length + 1);
+
+    newPlant.plant_id = plants.length + 1;
 
     plants.add(newPlant);
     plant_list = plants;
@@ -238,7 +246,6 @@ Future<File> get _localFile async {
   Future<void> removeAllPlants() async {
     plant_list = [];
     await writePlants([]);
-    
   }
 
     Future<bool> setWatering(Plant plant) async {
@@ -269,7 +276,6 @@ Future<File> get _localFile async {
     return true;
   }
 
-
   Future<List<Plant>> getPlants() async {
     try {
       final file = await _localFile;
@@ -281,6 +287,4 @@ Future<File> get _localFile async {
       return [];
     }
   }
-
-
 }

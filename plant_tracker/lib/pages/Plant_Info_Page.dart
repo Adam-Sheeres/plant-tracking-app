@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, must_be_immutable
+/ ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
 //import '../services/plantdb.dart';
@@ -302,4 +302,3 @@ class PlantInfoPage extends StatelessWidget {
     }
   }
 }
-
