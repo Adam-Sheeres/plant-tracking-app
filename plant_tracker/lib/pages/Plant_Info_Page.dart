@@ -1,11 +1,15 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
+import '../services/plantdb.dart';
 import 'package:intl/intl.dart';
-import 'package:plant_tracker/plant_db.dart';
+import 'dart:developer';
+import '../services/Navigation_Drawer.dart';
+import '../services/notification.dart';
 
 class PlantInfoPage extends StatelessWidget {
   Plant displayPlant;
+  plantDB db = plantDB();
   PlantInfoPage({super.key, required this.displayPlant});
   @override
   Widget build(BuildContext context) {
@@ -45,13 +49,21 @@ class PlantInfoPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text(
-                              displayPlant.plant_name,
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 40,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  displayPlant.plant_name,
+                                  textAlign: TextAlign.left,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 40,
+                                  ),
+                                ),
+                                IconButton(onPressed: () {
+                                  db.setWatering(displayPlant);
+                                }, icon: const Icon(Icons.water_drop_outlined))
+                              ],
                             ),
                             SizedBox(
                               height: 40.0, // add a height to the container
@@ -63,7 +75,7 @@ class PlantInfoPage extends StatelessWidget {
                                       style: const TextStyle(color: Colors.black)),
                                   Expanded(
                                     child: LinearProgressIndicator(
-                                      value: 0.4, //TODO update // This should be a value between 0.0 and 1.0
+                                      value: getWateringBar(displayPlant), // This should be a value between 0.0 and 1.0
                                       backgroundColor: Colors.grey,
                                       valueColor: const AlwaysStoppedAnimation<Color>(
                                           Color.fromARGB(255, 76, 222, 241)),
@@ -89,10 +101,10 @@ class PlantInfoPage extends StatelessWidget {
                                 Text.rich(
                                   textAlign: TextAlign.left,
                                   TextSpan(
-                                    text: "Last Watered: ",
+                                    text: "Watered: ",
                                     style: const TextStyle(
                                       color: Colors.black,
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     children: [
@@ -106,7 +118,7 @@ class PlantInfoPage extends StatelessWidget {
                                     text: "Room: ",
                                     style: const TextStyle(
                                       color: Colors.black,
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     children: [
@@ -125,7 +137,7 @@ class PlantInfoPage extends StatelessWidget {
                                     text: "Light Type: ",
                                     style: const TextStyle(
                                       color: Colors.black,
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     children: [
@@ -139,7 +151,7 @@ class PlantInfoPage extends StatelessWidget {
                                     text: "Light Level: ",
                                     style: const TextStyle(
                                       color: Colors.black,
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     children: [
@@ -167,13 +179,13 @@ class PlantInfoPage extends StatelessWidget {
                               ),
                               textAlign: TextAlign.start,
                             ),
-                            Text(
-                              displayPlant.note.toString(),
+                            /*Text(
+                              displayPlant.note.note,
                               style: const TextStyle(
                                 fontSize: 18,
                                 color: Colors.black,
                               ),
-                            ),
+                            ),*/
                             const SizedBox(
                               height: 20,
                             ),
@@ -202,4 +214,30 @@ class PlantInfoPage extends StatelessWidget {
       ),
     );
   }
+
+  double getWateringBar(Plant plant) {
+    DateTime lastWatered = plant.last_watered;
+    DateTime now = DateTime.now();
+
+    int hoursSinceLastWatered = now.difference(lastWatered).inHours;
+    int wateringIntervalInHours = plant.water_days * 24;
+
+    // If the plant has not been watered for longer than its watering interval, return 0
+    NotificationService x = NotificationService();
+
+    if (hoursSinceLastWatered >= wateringIntervalInHours) {
+      //send a notification
+      if (!plant.hasShownNotification) {
+        x.showNotification(body: "Your ${plant.plant_name} needs some love!", title: "BloomBuddy", payLoad: "payload");
+        plant.hasShownNotification = true;
+      }
+      return 0.0;
+    }
+
+    // Calculate the watering level as a fraction between 0 and 1
+    double wateringLevel = 1.0 - (hoursSinceLastWatered / wateringIntervalInHours);
+    wateringLevel.clamp(0, 1);
+    return wateringLevel;
+  }
 }
+
