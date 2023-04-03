@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           );
         },
         child: Card(
-          shadowColor: Colors.black,
+          shadowColor: const Color.fromARGB(255, 131, 131, 131),
           color: greenColour,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,7 +186,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               SizedBox(
                 width: MediaQuery.of(context).size.width / 4,
                 height: 100,
-                child: _buildImageContainer(plant),
+                child: _buildImage(plant),
               ),
               Expanded(
                 child: Padding(
@@ -201,23 +201,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildImageContainer(Plant plant) {
-    // var imgMem = Image.memory(base64Decode(plant.imageUrl));
-    return Padding(
-        padding: const EdgeInsets.all(0.0),
-        child: Container(
-          height: 100,
-          width: 100,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            image: DecorationImage(
-              image: MemoryImage(base64Decode(plant.imageUrl)),
-              fit: BoxFit.cover,
-            ),
-          ),
-          alignment: Alignment.center,
-        ));
-  }
 
   Widget _buildInfoContainer(Plant plant) {
     return Container(
@@ -231,6 +214,44 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  Widget _buildImageContainer(Plant plant) {
+    // var imgMem = Image.memory(base64Decode(plant.imageUrl));
+    return Padding(
+      padding: const EdgeInsets.all(0.0),
+      child: Container(
+        height: 100,
+        width: 100,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          image: DecorationImage(
+            image: MemoryImage(base64Decode(plant.imageUrl)),
+            fit: BoxFit.cover,
+          ),
+        ),
+        alignment: Alignment.center,
+      ));
+  }
+
+  Widget _buildImage(Plant plant) {
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: greenColour,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Image(
+            image: MemoryImage(base64Decode(plant.imageUrl)),
+            fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
   }
 
   Widget _buildPlantDetails(Plant plant) {
