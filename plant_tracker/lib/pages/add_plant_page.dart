@@ -148,9 +148,7 @@ class _AddPlantPage extends State<AddPlantPage> {
               room: "",
               hasShownNotification: false,
             );
-            widget.db.addPlant(newPlant);
-
-            Navigator.pop(context);
+            widget.db.addPlant(newPlant).then((value) => Navigator.pop(context));
           }
         },
       ),
