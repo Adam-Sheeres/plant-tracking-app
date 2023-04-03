@@ -44,195 +44,206 @@ class PlantInfoPage extends StatelessWidget {
                       margin: const EdgeInsets.all(0.0),
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  displayPlant.plant_name,
-                                  textAlign: TextAlign.left,
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 40,
+                        child: StatefulBuilder(builder: (context, setState){
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    displayPlant.plant_name,
+                                    textAlign: TextAlign.left,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 40,
+                                    ),
+                                  ),
+                                  IconButton(onPressed: () {
+                                    db.setWatering(displayPlant);
+                                    print(displayPlant.last_watered);
+                                    setState((){});
+                                  }, icon: const Icon(Icons.water_drop_outlined))
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(5.0), // add a height to the container
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 15.0),
+                                  width: 300,
+                                  height: 10,
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                    child: LinearProgressIndicator(
+                                      value: getWateringBar(displayPlant), // This should be a value between 0.0 and 1.0
+                                      backgroundColor: Colors.grey,
+                                      valueColor: const AlwaysStoppedAnimation<Color>(
+                                          Color.fromARGB(255, 76, 222, 241)),
+                                    ),
                                   ),
                                 ),
-                                IconButton(onPressed: () {
-                                  db.setWatering(displayPlant);
-                                }, icon: const Icon(Icons.water_drop_outlined))
-                              ],
-                            ),
-                            SizedBox(
-                              height: 40.0, // add a height to the container
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                displayPlant.description,
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(fontSize: 18, color: Colors.black),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Text.rich(
+                                textAlign: TextAlign.left,
+                                TextSpan(
+                                  text: "Last Watered: ",
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  children: [
+                                    TextSpan(text: DateFormat.yMMMd().format(displayPlant.last_watered), style: const TextStyle(fontWeight: FontWeight.normal)),
+                                  ],
+                                ),
+                              ),
+                              Text.rich(
+                                textAlign: TextAlign.left,
+                                TextSpan(
+                                  text: "Room: ",
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  children: [
+                                    TextSpan(text: theRoom(displayPlant), style: const TextStyle(fontWeight: FontWeight.normal)),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                      child: LinearProgressIndicator(
-                                        value: getWateringBar(displayPlant), // This should be a value between 0.0 and 1.0
-                                        backgroundColor: Colors.grey,
-                                        valueColor: const AlwaysStoppedAnimation<Color>(
-                                            Color.fromARGB(255, 76, 222, 241)),
-                                      ),
+                                  Card(
+                                    shadowColor: Colors.black,
+                                    color: const Color.fromARGB(255, 76, 222, 241),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(6.0),
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width / 4,
+                                            height: 75,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20.0),
+                                              image: const DecorationImage(
+                                                image: NetworkImage('https://cdn.shopify.com/s/files/1/1061/1924/products/Sweat_Water_Emoji_1024x1024.png?v=1571606064'),
+                                                fit: BoxFit.scaleDown,
+                                              ),
+                                            ),
+                                            alignment: Alignment.center,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${displayPlant.water_volume} ml",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Card(
+                                    shadowColor: Colors.black,
+                                    color: Colors.yellow,
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(6.0),
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width / 4,
+                                            height: 75,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20.0),
+                                              image: const DecorationImage(
+                                                image: NetworkImage('https://em-content.zobj.net/thumbs/160/apple/81/electric-light-bulb_1f4a1.png'),
+                                                fit: BoxFit.scaleDown,
+                                              ),
+                                            ),
+                                            alignment: Alignment.center,
+                                          ),
+                                        ),
+                                        Text(
+                                          displayPlant.light_type.displayValue,
+                                          textAlign: TextAlign.center,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Card(
+                                    shadowColor: Colors.black,
+                                    color: Colors.grey,
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(6.0),
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width / 4,
+                                            height: 75,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20.0),
+                                              image: const DecorationImage(
+                                                image: NetworkImage('https://images.emojiterra.com/twitter/v13.1/512px/1f506.png'),
+                                                fit: BoxFit.scaleDown,
+                                              ),
+                                            ),
+                                            alignment: Alignment.center,
+                                          ),
+                                        ),
+                                        Text(
+                                          displayPlant.light_level.displayValue,
+                                          textAlign: TextAlign.center,
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              displayPlant.description,
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(fontSize: 18, color: Colors.black),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text.rich(
-                              textAlign: TextAlign.left,
-                              TextSpan(
-                                text: "Last Watered: ",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                children: [
-                                  TextSpan(text: DateFormat.yMMMd().format(displayPlant.last_watered), style: const TextStyle(fontWeight: FontWeight.normal)),
-                                ],
+                              const SizedBox(
+                                height: 20,
                               ),
-                            ),
-                            Text.rich(
-                              textAlign: TextAlign.left,
-                              TextSpan(
-                                text: "Room: ",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                children: [
-                                  TextSpan(text: theRoom(displayPlant), style: const TextStyle(fontWeight: FontWeight.normal)),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Card(
-                                  shadowColor: Colors.black,
-                                  color: const Color.fromARGB(255, 76, 222, 241),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width / 4,
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20.0),
-                                          image: const DecorationImage(
-                                            image: NetworkImage('https://cdn.shopify.com/s/files/1/1061/1924/products/Sweat_Water_Emoji_1024x1024.png?v=1571606064'),
-                                            fit: BoxFit.scaleDown,
-                                          ),
-                                        ),
-                                        alignment: Alignment.center,
-                                      ),
-                                      Text(
-                                        "${displayPlant.water_volume} ml",
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Card(
-                                  shadowColor: Colors.black,
-                                  color: Colors.yellow,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width / 4,
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20.0),
-                                          image: const DecorationImage(
-                                            image: NetworkImage('https://em-content.zobj.net/thumbs/160/apple/81/electric-light-bulb_1f4a1.png'),
-                                            fit: BoxFit.scaleDown,
-                                          ),
-                                        ),
-                                        alignment: Alignment.center,
-                                      ),
-                                      Text(
-                                        displayPlant.light_type.displayValue,
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Card(
-                                  shadowColor: Colors.black,
-                                  color: Colors.grey,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width / 4,
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20.0),
-                                          image: const DecorationImage(
-                                            image: NetworkImage('https://images.emojiterra.com/twitter/v13.1/512px/1f506.png'),
-                                            fit: BoxFit.scaleDown,
-                                          ),
-                                        ),
-                                        alignment: Alignment.center,
-                                      ),
-                                      Text(
-                                        displayPlant.light_level.displayValue,
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: const [
 
-                              ],
-                            ),
-                            const Text(
-                              "Note",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 30,
-                                decoration: TextDecoration.underline,
+                                ],
                               ),
-                              textAlign: TextAlign.start,
-                            ),
-                            //TODO: Add a note caller here 
-                            /*Text(
-                              displayPlant.note.note,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
+                              const Text(
+                                "Note",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 30,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                textAlign: TextAlign.start,
                               ),
-                            ),*/
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
+                              //TODO: Add a note caller here 
+                              /*Text(
+                                displayPlant.note.note,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                ),
+                              ),*/
+                              const SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          );
+                        }),
                       ),
                     ),
 
