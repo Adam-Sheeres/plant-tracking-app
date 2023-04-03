@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, camel_case_types
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -273,6 +274,8 @@ class plant_db {
     // Write the updated plantJsonList to the file
     final file = await _localFile;
     await file.writeAsString(jsonEncode(plantJsonList));
+    log("Successfully wrote plants to db");
+    log(plants.toString());
     return true;
   }
 

@@ -1,15 +1,18 @@
-/ ignore_for_file: file_names, must_be_immutable
+// ignore: file_names
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-//import '../services/plantdb.dart';
 import 'package:plant_tracker/plant_db.dart';
 import 'package:intl/intl.dart';
 import '../services/notification.dart';
 
+// ignore: must_be_immutable
 class PlantInfoPage extends StatelessWidget {
   Plant displayPlant;
   plant_db db = plant_db();
-  PlantInfoPage({super.key, required this.displayPlant});
+  PlantInfoPage({super.key, required this.displayPlant, required this.refreshPlantList});
+  final VoidCallback refreshPlantList;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,8 +34,8 @@ class PlantInfoPage extends StatelessWidget {
                   children: [
                     Hero(
                       tag: displayPlant.plant_name,
-                      child: Image.network(
-                        displayPlant.imageUrl,
+                        child: Image.memory(
+                        base64Decode(displayPlant.imageUrl),
                         fit: BoxFit.fitWidth,
                         height: 400.0,
                         width: double.infinity,
@@ -61,9 +64,7 @@ class PlantInfoPage extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(onPressed: () {
-                                    db.setWatering(displayPlant);
-                                    print(displayPlant.last_watered);
-                                    setState((){});
+                                    db.setWatering(displayPlant).then((value) => setState((){refreshPlantList(); }) );
                                   }, icon: const Icon(Icons.water_drop_outlined))
                                 ],
                               ),
@@ -135,7 +136,7 @@ class PlantInfoPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.all(6.0),
+                                          padding: const EdgeInsets.all(6.0),
                                           child: Container(
                                             width: MediaQuery.of(context).size.width / 4,
                                             height: 75,
@@ -150,7 +151,7 @@ class PlantInfoPage extends StatelessWidget {
                                           ),
                                         ),
                                         Text(
-                                          "${displayPlant.water_volume} ml",
+                                          displayPlant.water_volume == 0 ? "Water amount" : "${displayPlant.water_volume} ml",
                                           textAlign: TextAlign.center,
                                         ),
                                       ],
@@ -162,7 +163,7 @@ class PlantInfoPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.all(6.0),
+                                          padding: const EdgeInsets.all(6.0),
                                           child: Container(
                                             width: MediaQuery.of(context).size.width / 4,
                                             height: 75,
@@ -189,7 +190,7 @@ class PlantInfoPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.all(6.0),
+                                          padding: const EdgeInsets.all(6.0),
                                           child: Container(
                                             width: MediaQuery.of(context).size.width / 4,
                                             height: 75,
@@ -218,7 +219,6 @@ class PlantInfoPage extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: const [
-
                                 ],
                               ),
                               const Text(

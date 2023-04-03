@@ -48,7 +48,9 @@ class _AddPlantPage extends State<AddPlantPage> {
   TextEditingController plantNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController waterDaysController = TextEditingController();
+  TextEditingController waterAmountController = TextEditingController();
   TextEditingController roomController = TextEditingController();
+
 
   DateTime entryDate = DateTime.now();
 
@@ -86,6 +88,7 @@ class _AddPlantPage extends State<AddPlantPage> {
               _buildRoom(),
               _buildLightInfo(),
               _buildDescription(),
+              _buildWaterAmount(),
               _buildButton(context),
               const SizedBox(
                 height: 10,
@@ -94,6 +97,41 @@ class _AddPlantPage extends State<AddPlantPage> {
           ),
         ),
       ),
+    );
+  }
+
+  
+  Column _buildWaterAmount() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            'Amount of Water: ',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            controller: waterAmountController,
+            maxLines: 1,
+            minLines: 1,
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Enter the amount of water in ml',
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -136,7 +174,8 @@ class _AddPlantPage extends State<AddPlantPage> {
               date_added: entryDate,
               water_days: int.parse(waterDaysController.text),
               last_watered: entryDate,
-              water_volume: 0,
+              water_volume: waterAmountController.text.isNotEmpty
+                ? int.parse(waterAmountController.text) : 0,
               light_level: LightLevel.values
                   .firstWhere((level) => level.name == dropdownLevelValue),
               light_type: LightType.values
