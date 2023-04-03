@@ -209,6 +209,11 @@ class plant_db {
       newPlant.imageUrl = base64Image;
     }
 
+    print("new id: ");
+    print(plants.length + 1);
+
+    newPlant.plant_id = plants.length + 1;
+
     plants.add(newPlant);
     plant_list = plants;
 

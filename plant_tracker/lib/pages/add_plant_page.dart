@@ -148,8 +148,6 @@ class _AddPlantPage extends State<AddPlantPage> {
             );
             widget.db.addPlant(newPlant);
 
-            print(newPlant.plant_id);
-
             Navigator.pop(context);
           }
         },
