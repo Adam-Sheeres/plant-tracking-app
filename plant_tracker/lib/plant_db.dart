@@ -44,7 +44,7 @@ class Plant {
   int water_days, water_volume, plant_id;
   DateTime date_added, last_watered;
   bool isFavourite, hasShownNotification;
-  List<Note>? note;
+  List<Note> note;
 
   LightLevel light_level;
   LightType light_type;
@@ -65,7 +65,7 @@ class Plant {
     required this.isFavourite,
     required this.room,
     required this.hasShownNotification,
-    this.note,
+    required this.note,
   });
 
   factory Plant.fromJson(Map<String, dynamic> json) {
@@ -120,14 +120,12 @@ class Plant {
 
   Map<String, dynamic> toJson() {
     List<Map<String, dynamic>> noteJsonList = [];
-    if (note != null) {
-      noteJsonList = note!
-        .map((note) => {
-          'dateAdded': note.dateAdded.toIso8601String(),
-          'note': note.note,
-        })
-        .toList();
-    }
+    noteJsonList = note
+      .map((note) => {
+        'dateAdded': note.dateAdded.toIso8601String(),
+        'note': note.note,
+      })
+      .toList();
 
     return {
       'plant_id': plant_id,
@@ -198,8 +196,7 @@ class plant_db {
 
     // If the plant is found, add the new note to its list of notes
     if (plantIndex != -1) {
-      plants[plantIndex].note ??= [];
-      plants[plantIndex].note!.add(newNote);
+      plants[plantIndex].note.add(newNote);
 
       // Write the updated plant_list to a file
       await writePlants(plants);
@@ -210,6 +207,7 @@ class plant_db {
   Future<bool> addPlant(Plant newPlant) async {
     // Get the current list of plants
     List<Plant> plants = await getPlants();
+    List<Note> noteList = [];
     // Add the new plant to the plant_list
 
     //set default plant image
@@ -220,10 +218,8 @@ class plant_db {
       newPlant.imageUrl = base64Image;
     }
 
-    print("new id: ");
-    print(plants.length + 1);
-
     newPlant.plant_id = plants.length + 1;
+    newPlant.note = noteList;
 
     plants.add(newPlant);
     plant_list = plants;
