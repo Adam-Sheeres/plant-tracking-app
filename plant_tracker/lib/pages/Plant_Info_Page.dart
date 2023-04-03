@@ -221,23 +221,25 @@ class PlantInfoPage extends StatelessWidget {
                                 children: const [
                                 ],
                               ),
-                              const Text(
-                                "Note",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 30,
-                                  decoration: TextDecoration.underline,
-                                ),
-                                textAlign: TextAlign.start,
-                              ),
-                              //TODO: Add a note caller here 
-                              /*Text(
-                                displayPlant.note.note,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                ),
-                              ),*/
+                                Row(
+                                children: [
+                                  Text(
+                                    "Note",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 30,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                    IconButton(
+                                               icon: Icon(Icons.add),
+                                                onPressed: () {
+                                             // TODO: Implement the action to be performed when the button is pressed
+                                            },
+                                          ),
+                                        ],
+                                      ),
                               const SizedBox(
                                 height: 20,
                               ),

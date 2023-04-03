@@ -14,10 +14,14 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPage extends State<SettingsPage> {
   // ignore: non_constant_identifier_names
   final _plant_db = plant_db();
+   bool _isDarkMode = false; 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp( // Wrap Scaffold with MaterialApp
+      theme: _isDarkMode ? ThemeData.dark() : ThemeData.light(), // Add this line
+      debugShowCheckedModeBanner: false, // Add this line
+      home: Scaffold(
       appBar: AppBar(
           title: const Text("Settings"),
           backgroundColor: const Color.fromARGB(255, 156, 232, 94),
@@ -25,6 +29,7 @@ class _SettingsPage extends State<SettingsPage> {
           titleTextStyle: const TextStyle(
               color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
       body: settingsBody(),
+      ),
     );
   }
 
@@ -35,19 +40,30 @@ class _SettingsPage extends State<SettingsPage> {
         children: [
           removePlant(),
           buildSettingsTile(
-            icon: Icons.download,
+            icon: Icons.import_export,
             label: "Import",
             onPressed: () {},
           ),
           buildSettingsTile(
-            icon: Icons.upload,
+            icon: Icons.import_export,
             label: "Export",
             onPressed: () {},
+          ),
+          SwitchListTile( // Add this SwitchListTile widget
+            title: const Text('Dark mode'),
+            value: _isDarkMode,
+            onChanged: (bool value) {
+              setState(() {
+                _isDarkMode = value;
+              });
+            },
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
           ),
         ],
       ),
     );
   }
+
 
   Widget removePlant() {
     return buildSettingsTile(
@@ -59,8 +75,7 @@ class _SettingsPage extends State<SettingsPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text("Remove all plants?"),
-              content:
-                  const Text("Are you sure you want to remove all plants?"),
+              content: const Text("Are you sure you want to remove all plants?"),
               actions: <Widget>[
                 TextButton(
                   child: const Text("Cancel"),
@@ -91,6 +106,7 @@ class _SettingsPage extends State<SettingsPage> {
     );
   }
 
+
   Widget buildSettingsTile({
     required String label,
     required IconData icon,
@@ -113,4 +129,4 @@ class _SettingsPage extends State<SettingsPage> {
       ),
     );
   }
-}
+  }
