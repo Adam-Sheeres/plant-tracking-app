@@ -68,7 +68,7 @@ class _AddPlantPage extends State<AddPlantPage> {
         title: const Text(
           "Add Plant",
           style: TextStyle(
-            fontSize: 35,
+            fontSize: 20,
           ),
         ),
       ),
@@ -84,8 +84,8 @@ class _AddPlantPage extends State<AddPlantPage> {
               _buildDate(context),
               _buildWaterDays(),
               _buildRoom(),
-              _buildDescription(),
               _buildLightInfo(),
+              _buildDescription(),
               _buildButton(context),
               const SizedBox(
                 height: 10,
@@ -102,17 +102,21 @@ class _AddPlantPage extends State<AddPlantPage> {
       alignment: Alignment.center,
       child: ElevatedButton(
         style: ButtonStyle(
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18.0),
-          // side: const BorderSide(color: Color.fromARGB(255, 156, 232, 94)),
-        ))),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+              // side: const BorderSide(color: Color.fromARGB(255, 156, 232, 94)),
+            ),
+          ),
+        ),
         child: const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text('Add Plant',
-              style: TextStyle(
-                fontSize: 25,
-              )),
+          child: Text(
+            'Add Plant',
+            style: TextStyle(
+              fontSize: 25,
+            ),
+          ),
         ),
         onPressed: () {
           // imageBytes = base64Decode(base64Image);
@@ -126,8 +130,6 @@ class _AddPlantPage extends State<AddPlantPage> {
                   _buildMissingFieldsPopup(context),
             );
           } else {
-            // plant_db db = plant_db();
-            // List<Plant> plantList = db.getList();
             Plant newPlant = Plant(
               plant_id: widget.db.plant_list.length + 1,
               plant_name: plantNameController.text,
@@ -159,16 +161,16 @@ class _AddPlantPage extends State<AddPlantPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            'Entry Date: ',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        // const Padding(
+        //   padding: EdgeInsets.all(8.0),
+        //   child: Text(
+        //     'Entry Date: ',
+        //     style: TextStyle(
+        //       fontSize: 30,
+        //       fontWeight: FontWeight.bold,
+        //     ),
+        //   ),
+        // ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextField(
@@ -208,25 +210,29 @@ class _AddPlantPage extends State<AddPlantPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            'Plant: ',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        // const Padding(
+        //   padding: EdgeInsets.all(8.0),
+        //   child: Text(
+        //     'Plant: ',
+        //     style: TextStyle(
+        //       fontSize: 30,
+        //       fontWeight: FontWeight.bold,
+        //     ),
+        //   ),
+        // ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.fromLTRB(30, 8, 30, 30),
           child: TextField(
+            textAlign: TextAlign.center,
             controller: plantNameController,
             maxLines: 1,
             minLines: 1,
             decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Enter name of plant to be added!',
+              border: UnderlineInputBorder(),
+              // label: Center(
+              //   child: Text("Enter Plant Name"),
+              // ),
+              hintText: "Enter Plant Name",
             ),
           ),
         ),
@@ -243,7 +249,7 @@ class _AddPlantPage extends State<AddPlantPage> {
           child: Text(
             'Room: ',
             style: TextStyle(
-              fontSize: 30,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -273,7 +279,7 @@ class _AddPlantPage extends State<AddPlantPage> {
           child: Text(
             'Description: ',
             style: TextStyle(
-              fontSize: 30,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -303,7 +309,7 @@ class _AddPlantPage extends State<AddPlantPage> {
           child: Text(
             'Watering Days: ',
             style: TextStyle(
-              fontSize: 30,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -328,66 +334,91 @@ class _AddPlantPage extends State<AddPlantPage> {
     );
   }
 
-  Row _buildLightInfo() {
-    return Row(
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            'Light Info: ',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
+  Padding _buildLightInfo() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 10, 8, 2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // const Padding(
+          //   padding: EdgeInsets.all(8.0),
+          //   child: Text(
+          //     'Light Info: ',
+          //     style: TextStyle(
+          //       fontSize: 20,
+          //       fontWeight: FontWeight.bold,
+          //     ),
+          //   ),
+          // ),
+          // Light Level dropdown
+          Column(
+            children: [
+              Text(
+                "Light Level",
+                textAlign: TextAlign.justify,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              DropdownButton<String>(
+                value: dropdownLevelValue,
+                icon: const Icon(Icons.arrow_downward),
+                elevation: 16,
+                // style: const TextStyle(color: Colors.deepPurple),
+                underline: Container(
+                  height: 2,
+                  // color: Colors.deepPurpleAccent,
+                ),
+                onChanged: (String? value) {
+                  // This is called when the user selects an item.
+                  setState(() {
+                    dropdownLevelValue = value!;
+                  });
+                },
+                items:
+                    lightLevels.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
-        ),
-        // Light Level dropdown
-        DropdownButton<String>(
-          value: dropdownLevelValue,
-          icon: const Icon(Icons.arrow_downward),
-          elevation: 16,
-          // style: const TextStyle(color: Colors.deepPurple),
-          underline: Container(
-            height: 2,
-            // color: Colors.deepPurpleAccent,
+          const SizedBox(width: 40),
+          // Light Type dropdown (direct/indirect)
+          Column(
+            children: [
+              Text(
+                "Light Type",
+                textAlign: TextAlign.justify,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              DropdownButton<String>(
+                value: dropdownTypeValue,
+                icon: const Icon(Icons.arrow_downward),
+                elevation: 16,
+                // style: const TextStyle(color: Colors.deepPurple),
+                underline: Container(
+                  height: 2,
+                  // color: Colors.deepPurpleAccent,
+                ),
+                onChanged: (String? value) {
+                  // This is called when the user selects an item.
+                  setState(() {
+                    dropdownTypeValue = value!;
+                  });
+                },
+                items: lightTypes.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
-          onChanged: (String? value) {
-            // This is called when the user selects an item.
-            setState(() {
-              dropdownLevelValue = value!;
-            });
-          },
-          items: lightLevels.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-        // Light Type dropdown (direct/indirect)
-        DropdownButton<String>(
-          value: dropdownTypeValue,
-          icon: const Icon(Icons.arrow_downward),
-          elevation: 16,
-          // style: const TextStyle(color: Colors.deepPurple),
-          underline: Container(
-            height: 2,
-            // color: Colors.deepPurpleAccent,
-          ),
-          onChanged: (String? value) {
-            // This is called when the user selects an item.
-            setState(() {
-              dropdownTypeValue = value!;
-            });
-          },
-          items: lightTypes.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -396,41 +427,61 @@ class _AddPlantPage extends State<AddPlantPage> {
       child: Column(
         children: [
           image != null
-              ? InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.file(
-                        //to show image, you type like this.
-                        File(image!.path),
-                        fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.width,
-                        height: 300,
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: InkWell(
+                    child: Card(
+                      elevation: 2,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          //to show image, you type like this.
+                          File(image!.path),
+                          fit: BoxFit.cover,
+                          width: 200,
+                          // width: MediaQuery.of(context).size.width,
+                          height: 200,
+                        ),
                       ),
                     ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            _buildImagePopup(context),
+                      );
+                    },
                   ),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) =>
-                          _buildImagePopup(context),
-                    );
-                  },
                 )
-              : ElevatedButton.icon(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) =>
-                          _buildImagePopup(context),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.image,
-                    size: 24,
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: InkWell(
+                    child: Card(
+                      elevation: 2,
+                      child: SizedBox(
+                        height: 200,
+                        width: 200,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(
+                                  Icons.image,
+                                ),
+                                Text("click to add photo"),
+                              ],
+                            )),
+                      ),
+                    ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            _buildImagePopup(context),
+                      );
+                    },
                   ),
-                  label: const Text('Upload Image'),
                 ),
           // const SizedBox(
           //   height: 10,
@@ -455,7 +506,7 @@ class _AddPlantPage extends State<AddPlantPage> {
         'Select Media',
         textAlign: TextAlign.center,
       ),
-      content: Container(
+      content: SizedBox(
         height: MediaQuery.of(context).size.height / 6,
         child: Column(
           children: [
@@ -507,9 +558,8 @@ class _AddPlantPage extends State<AddPlantPage> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const Text(
-              "Unable to add plant, please enter the name and watering days."),
+        children: const <Widget>[
+          Text("Unable to add plant, please enter the name and watering days."),
         ],
       ),
       actions: <Widget>[
