@@ -233,9 +233,8 @@ class PlantInfoPage extends StatelessWidget {
                                     textAlign: TextAlign.start,
                                   ),
                                     IconButton(
-                                               icon: Icon(Icons.add),
+                                              icon: Icon(Icons.add),
                                                 onPressed: () {
-                                             // TODO: Implement the action to be performed when the button is pressed
                                             },
                                           ),
                                         ],
