@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:plant_tracker/plant_db.dart';
 
 class AddNotePage extends StatefulWidget {
-  final Function(String) onSaveNote;
+  final Function() onSaveNote;
   final plant_db database;
   final Plant plant;
 
@@ -43,10 +43,10 @@ class _AddNotePageState extends State<AddNotePage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 String noteText = _noteTextController.text;
                 if (noteText.isNotEmpty) {
-                  widget.database.addNote(widget.plant.plant_name, noteText);
+                  await widget.database.addNote(widget.plant.plant_name, noteText);
                   Navigator.pop(context);
                 }
               },
