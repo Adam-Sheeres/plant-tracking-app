@@ -190,16 +190,13 @@ class plant_db {
   Future<void> addNote(String plantName, String text) async {
     List<Plant> plants = await getPlants();
     Note newNote = Note(dateAdded: DateTime.now(), note: text); //create a new note 
+    log("New note: $text");
 
-    // Find the plant with the given name
     int plantIndex =
         plants.indexWhere((plant) => plant.plant_name == plantName);
 
-    // If the plant is found, add the new note to its list of notes
     if (plantIndex != -1) {
       plants[plantIndex].note.add(newNote);
-
-      // Write the updated plant_list to a file
       await writePlants(plants);
     }
   }

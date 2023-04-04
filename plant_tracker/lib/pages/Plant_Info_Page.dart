@@ -285,6 +285,7 @@ class PlantInfoPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+                              getNotesAsListView(displayPlant),
                               const SizedBox(
                                 height: 20,
                               ),
