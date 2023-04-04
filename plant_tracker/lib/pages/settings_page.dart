@@ -49,16 +49,6 @@ class _SettingsPage extends State<SettingsPage> {
             label: "Export",
             onPressed: () {},
           ),
-          SwitchListTile( // Add this SwitchListTile widget
-            title: const Text('Dark mode'),
-            value: _isDarkMode,
-            onChanged: (bool value) {
-              setState(() {
-                _isDarkMode = value;
-              });
-            },
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-          ),
         ],
       ),
     );
