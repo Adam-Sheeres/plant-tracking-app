@@ -1,11 +1,12 @@
 // ignore_for_file: non_constant_identifier_names, camel_case_types
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 enum LightLevel { dark, medium, bright }
-
 
 extension LightLevelExtension on LightLevel {
   String get displayValue {
@@ -43,7 +44,7 @@ class Plant {
   int water_days, water_volume, plant_id;
   DateTime date_added, last_watered;
   bool isFavourite, hasShownNotification;
-  List<Note>? note;
+  List<Note> note;
 
   LightLevel light_level;
   LightType light_type;
@@ -64,7 +65,7 @@ class Plant {
     required this.isFavourite,
     required this.room,
     required this.hasShownNotification,
-    this.note,
+    required this.note,
   });
 
   factory Plant.fromJson(Map<String, dynamic> json) {
@@ -119,14 +120,12 @@ class Plant {
 
   Map<String, dynamic> toJson() {
     List<Map<String, dynamic>> noteJsonList = [];
-    if (note != null) {
-      noteJsonList = note!
-        .map((note) => {
-          'dateAdded': note.dateAdded.toIso8601String(),
-          'note': note.note,
-        })
-        .toList();
-    }
+    noteJsonList = note
+      .map((note) => {
+        'dateAdded': note.dateAdded.toIso8601String(),
+        'note': note.note,
+      })
+      .toList();
 
     return {
       'plant_id': plant_id,
@@ -183,43 +182,49 @@ class plant_db {
     return directory.path;
   }
 
-Future<File> get _localFile async {
-  final path = await _localPath;
-  return File('$path/plant_list.json');
-}
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/plant_list.json');
+  }
 
-  Future<void> addNote(String plantName, Note newNote) async {
+  Future<void> addNote(String plantName, String text) async {
     List<Plant> plants = await getPlants();
+    Note newNote = Note(dateAdded: DateTime.now(), note: text); //create a new note 
+    log("New note: $text");
 
-    // Find the plant with the given name
-    int plantIndex = plants.indexWhere((plant) => plant.plant_name == plantName);
+    int plantIndex =
+        plants.indexWhere((plant) => plant.plant_name == plantName);
 
-    // If the plant is found, add the new note to its list of notes
     if (plantIndex != -1) {
-      plants[plantIndex].note ??= [];
-      plants[plantIndex].note!.add(newNote);
-
-      // Write the updated plant_list to a file
+      plants[plantIndex].note.add(newNote);
       await writePlants(plants);
     }
+    log("Added note");
   }
 
 
   Future<bool> addPlant(Plant newPlant) async {
     // Get the current list of plants
     List<Plant> plants = await getPlants();
+    List<Note> noteList = [];
     // Add the new plant to the plant_list
 
-
-  //set default plant image 
+    //set default plant image
     if (newPlant.imageUrl == "") {
-      newPlant.imageUrl = "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/63919/potted-plant-clipart-md.png";
+      http.Response response = await http.get(Uri.parse(
+          "https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/63919/potted-plant-clipart-md.png"));
+      String base64Image = base64Encode(response.bodyBytes);
+      newPlant.imageUrl = base64Image;
     }
+
+    newPlant.plant_id = plants.length + 1;
+    newPlant.note = noteList;
 
     plants.add(newPlant);
     plant_list = plants;
 
     // Write the updated plant_list to a file
+    log("Added plant");
     return writePlants(plants);
   }
 
@@ -232,19 +237,18 @@ Future<File> get _localFile async {
     plant_list = plants;
 
     // Write the updated plant_list to a file
+    log("Removed plant");
     await writePlants(plants);
   }
 
   Future<void> removeAllPlants() async {
     plant_list = [];
     await writePlants([]);
-    
   }
 
     Future<bool> setWatering(Plant plant) async {
     // Water the plant and update the last_watered date
     // ignore: avoid_print
-    print("${plant.last_watered} -> ${DateTime.now()}");
     plant.last_watered = DateTime.now();
 
     // Write the updated plant to the file
@@ -255,6 +259,7 @@ Future<File> get _localFile async {
       return await writePlants(plants);
     }
     // ignore: avoid_print
+    log("watered plant ${plant.plant_name}");
     return false;
   }
 
@@ -266,11 +271,12 @@ Future<File> get _localFile async {
     // Write the updated plantJsonList to the file
     final file = await _localFile;
     await file.writeAsString(jsonEncode(plantJsonList));
+    log("Wrote plants to DB");
     return true;
   }
 
-
   Future<List<Plant>> getPlants() async {
+    log("Getting plants");
     try {
       final file = await _localFile;
       final contents = await file.readAsString();
@@ -281,6 +287,4 @@ Future<File> get _localFile async {
       return [];
     }
   }
-
-
 }

@@ -14,10 +14,14 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPage extends State<SettingsPage> {
   // ignore: non_constant_identifier_names
   final _plant_db = plant_db();
+   bool _isDarkMode = false; 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp( // Wrap Scaffold with MaterialApp
+      theme: _isDarkMode ? ThemeData.dark() : ThemeData.light(), // Add this line
+      debugShowCheckedModeBanner: false, // Add this line
+      home: Scaffold(
       appBar: AppBar(
           title: const Text("Settings"),
           backgroundColor: const Color.fromARGB(255, 156, 232, 94),
@@ -25,6 +29,7 @@ class _SettingsPage extends State<SettingsPage> {
           titleTextStyle: const TextStyle(
               color: Color.fromARGB(255, 0, 0, 0), fontSize: 22)),
       body: settingsBody(),
+      ),
     );
   }
 

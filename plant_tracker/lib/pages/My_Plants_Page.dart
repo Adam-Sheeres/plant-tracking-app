@@ -1,5 +1,7 @@
 // ignore_for_file: file_names, library_private_types_in_public_api
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:plant_tracker/pages/add_plant_page.dart';
 import '../services/Navigation_Drawer.dart';
@@ -25,123 +27,90 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   plant_db db = plant_db();
   List<Plant> _plantList = [];
 
+  late final AnimationController controller;
+  late final Animation<double> aniimation;
 
   void refreshPlantList() async {
+    controller.stop(canceled: false);
     _plantList = await db.getPlants();
     setState(() {});
+    controller.forward();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    aniimation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
+
+    for (var plant in _plantList) {
+      precacheImage(MemoryImage(base64Decode(plant.imageUrl)), context);
+    }
+
+    controller.forward();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Plant>>(
-      future: db.getPlants(),
-      builder: (BuildContext context, AsyncSnapshot<List<Plant>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-        _plantList = snapshot.data!;
-        return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: AppBar(
-              title: const Text("Bloom Buddy"),
-              backgroundColor: Colors.green,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      switch (_sortOption) {
-                        case SortOption.nextToWater:
-                          _sortOption = SortOption.name;
-                          break;
-                        case SortOption.name:
-                          _sortOption = SortOption.dateAdded;
-                          break;
-                        case SortOption.dateAdded:
-                          _sortOption = SortOption.room;
-                          break;
-                        case SortOption.room:
-                          _sortOption = SortOption.nextToWater;
-                          break;
-                      }
-                    });
-                  },
-                  icon: Icon(_sortOption == SortOption.nextToWater
-                      ? Icons.water_drop_outlined
-                      : _sortOption == SortOption.name
-                          ? Icons.sort_by_alpha_outlined
-                          : _sortOption == SortOption.dateAdded
-                              ? Icons.date_range_outlined
-                              : Icons.house_outlined),
-                ),
-              ],
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          title: const Text("Bloom Buddy"),
+          backgroundColor: Colors.green,
+          actions: [
+            IconButton(onPressed: refreshPlantList, icon: const Icon(Icons.sync)),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  controller.reset();
+                  controller.forward();
+                  switch (_sortOption) {
+                    case SortOption.nextToWater:
+                      _sortOption = SortOption.name;
+                      break;
+                    case SortOption.name:
+                      _sortOption = SortOption.dateAdded;
+                      break;
+                    case SortOption.dateAdded:
+                      _sortOption = SortOption.room;
+                      break;
+                    case SortOption.room:
+                      _sortOption = SortOption.nextToWater;
+                      break;
+                  }
+                });
+              },
+              icon: Icon(_sortOption == SortOption.nextToWater
+                  ? Icons.water_drop_outlined
+                  : _sortOption == SortOption.name
+                      ? Icons.sort_by_alpha_outlined
+                      : _sortOption == SortOption.dateAdded
+                          ? Icons.date_range_outlined
+                          : Icons.house_outlined),
             ),
-          ),
-          backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-          body: getPlantTiles(_plantList, context),
-          drawer: NavDrawer(
-            refreshPlantList: refreshPlantList,
-          ),
-          floatingActionButton:
-              getAddPlantButton(context, _plantList, db, refreshPlantList),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-        );
-        } else if (snapshot.data != null) {
-        _plantList = snapshot.data!;
-        return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: AppBar(
-              title: const Text("Bloom Buddy"),
-              backgroundColor: Colors.green,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      switch (_sortOption) {
-                        case SortOption.nextToWater:
-                          _sortOption = SortOption.name;
-                          break;
-                        case SortOption.name:
-                          _sortOption = SortOption.dateAdded;
-                          break;
-                        case SortOption.dateAdded:
-                          _sortOption = SortOption.room;
-                          break;
-                        case SortOption.room:
-                          _sortOption = SortOption.nextToWater;
-                          break;
-                      }
-                    });
-                  },
-                  icon: Icon(_sortOption == SortOption.nextToWater
-                      ? Icons.water_drop_outlined
-                      : _sortOption == SortOption.name
-                          ? Icons.sort_by_alpha_outlined
-                          : _sortOption == SortOption.dateAdded
-                              ? Icons.date_range_outlined
-                              : Icons.house_outlined),
-                ),
-              ],
-            ),
-          ),
-          backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-          body: getPlantTiles(_plantList, context),
-          drawer: NavDrawer(
-            refreshPlantList: refreshPlantList,
-          ),
-          floatingActionButton:
-              getAddPlantButton(context, _plantList, db, refreshPlantList),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-        );
-        } else {
-          return const CircularProgressIndicator();
-        }
-      },
+          ],
+        ),
+      ),
+      backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+      body: getPlantTiles(_plantList, context),
+      drawer: NavDrawer(
+        refreshPlantList: refreshPlantList,
+      ),
+      floatingActionButton:
+          getAddPlantButton(context, _plantList, db, refreshPlantList),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -162,7 +131,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  AnimatedList getPlantTiles(List<Plant> plantList, BuildContext context) {
+  FutureBuilder<List<Plant>> getPlantTiles(
+      List<Plant> plantList, BuildContext context) {
     switch (_sortOption) {
       case SortOption.nextToWater:
         plantList
@@ -179,14 +149,25 @@ class _HomePageState extends State<HomePage> {
         break;
     }
 
-    return AnimatedList(
-      itemBuilder: (context, index, animation) {
-        return FadeTransition(
-          opacity: animation,
-          child: _buildPlantTile(context, plantList[index]),
-        );
+    return FutureBuilder<List<Plant>>(
+      future: db.getPlants(),
+      builder: (BuildContext context, AsyncSnapshot<List<Plant>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: Padding(padding: EdgeInsets.all(0.0)),
+          );
+        } else {
+          return AnimatedList(
+            itemBuilder: (context, index, animation) {
+              return FadeTransition(
+                opacity: aniimation,
+                child: _buildPlantTile(context, snapshot.data![index]),
+              );
+            },
+            initialItemCount: snapshot.data!.length,
+          );
+        }
       },
-      initialItemCount: plantList.length,
     );
   }
 
@@ -197,12 +178,13 @@ class _HomePageState extends State<HomePage> {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => PlantInfoPage(displayPlant: plant),
+              builder: (context) => PlantInfoPage(
+                  displayPlant: plant, index: plant.plant_id, refreshPlantList: refreshPlantList),
             ),
           );
         },
         child: Card(
-          shadowColor: Colors.black,
+          shadowColor: const Color.fromARGB(255, 131, 131, 131),
           color: greenColour,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,7 +192,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 width: MediaQuery.of(context).size.width / 4,
                 height: 100,
-                child: _buildImageContainer(plant),
+                child: _buildImage(plant),
               ),
               Expanded(
                 child: Padding(
@@ -225,22 +207,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildImageContainer(Plant plant) {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          height: 100,
-          width: 100,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            image: DecorationImage(
-              image: NetworkImage(plant.imageUrl),
-              fit: BoxFit.scaleDown,
-            ),
-          ),
-          alignment: Alignment.center,
-        ));
-  }
 
   Widget _buildInfoContainer(Plant plant) {
     return Container(
@@ -255,6 +221,41 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+
+Widget _buildImage(Plant plant) {
+  return FutureBuilder(
+    future: Future.value(MemoryImage(base64Decode(plant.imageUrl))),
+    builder: (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        // return a placeholder or loading indicator widget here
+        return const CircularProgressIndicator();
+      } else if (snapshot.hasError) {
+        // handle the error state here
+        return const Icon(Icons.error);
+      } else {
+        return AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: greenColour,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image(
+                image: snapshot.data!,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        );
+      }
+    },
+  );
+}
+
 
   Widget _buildPlantDetails(Plant plant) {
     return Container(
@@ -319,14 +320,6 @@ class _HomePageState extends State<HomePage> {
     NotificationService x = NotificationService();
 
     if (hoursSinceLastWatered >= wateringIntervalInHours) {
-      //send a notification
-      if (!plant.hasShownNotification) {
-        x.showNotification(
-            body: "Your ${plant.plant_name} needs some love!",
-            title: "BloomBuddy",
-            payLoad: "payload");
-        plant.hasShownNotification = true;
-      }
       return 0.0;
     }
 
