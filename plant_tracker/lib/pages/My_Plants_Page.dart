@@ -47,6 +47,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
     aniimation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
+
+    for (var plant in _plantList) {
+      precacheImage(MemoryImage(base64Decode(plant.imageUrl)), context);
+    }
+
     controller.forward();
   }
 
@@ -65,6 +70,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           title: const Text("Bloom Buddy"),
           backgroundColor: Colors.green,
           actions: [
+            IconButton(onPressed: refreshPlantList, icon: const Icon(Icons.sync)),
             IconButton(
               onPressed: () {
                 setState(() {
@@ -216,43 +222,40 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildImageContainer(Plant plant) {
-    // var imgMem = Image.memory(base64Decode(plant.imageUrl));
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: Container(
-        height: 100,
-        width: 100,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          image: DecorationImage(
-            image: MemoryImage(base64Decode(plant.imageUrl)),
-            fit: BoxFit.cover,
-          ),
-        ),
-        alignment: Alignment.center,
-      ));
-  }
 
-  Widget _buildImage(Plant plant) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: greenColour,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Image(
-            image: MemoryImage(base64Decode(plant.imageUrl)),
-            fit: BoxFit.cover,
+Widget _buildImage(Plant plant) {
+  return FutureBuilder(
+    future: Future.value(MemoryImage(base64Decode(plant.imageUrl))),
+    builder: (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        // return a placeholder or loading indicator widget here
+        return const CircularProgressIndicator();
+      } else if (snapshot.hasError) {
+        // handle the error state here
+        return const Icon(Icons.error);
+      } else {
+        return AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: greenColour,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image(
+                image: snapshot.data!,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
-      );
-  }
+        );
+      }
+    },
+  );
+}
+
 
   Widget _buildPlantDetails(Plant plant) {
     return Container(
@@ -317,11 +320,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     NotificationService x = NotificationService();
 
     if (hoursSinceLastWatered >= wateringIntervalInHours) {
-      //send a notification
-      x.showNotification(
-          body: "Your ${plant.plant_name} needs some love!",
-          title: "BloomBuddy",
-          payLoad: "payload");
       return 0.0;
     }
 

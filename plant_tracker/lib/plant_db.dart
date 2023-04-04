@@ -199,6 +199,7 @@ class plant_db {
       plants[plantIndex].note.add(newNote);
       await writePlants(plants);
     }
+    log("Added note");
   }
 
 
@@ -223,6 +224,7 @@ class plant_db {
     plant_list = plants;
 
     // Write the updated plant_list to a file
+    log("Added plant");
     return writePlants(plants);
   }
 
@@ -235,6 +237,7 @@ class plant_db {
     plant_list = plants;
 
     // Write the updated plant_list to a file
+    log("Removed plant");
     await writePlants(plants);
   }
 
@@ -246,7 +249,6 @@ class plant_db {
     Future<bool> setWatering(Plant plant) async {
     // Water the plant and update the last_watered date
     // ignore: avoid_print
-    print("${plant.last_watered} -> ${DateTime.now()}");
     plant.last_watered = DateTime.now();
 
     // Write the updated plant to the file
@@ -257,6 +259,7 @@ class plant_db {
       return await writePlants(plants);
     }
     // ignore: avoid_print
+    log("watered plant ${plant.plant_name}");
     return false;
   }
 
@@ -268,12 +271,12 @@ class plant_db {
     // Write the updated plantJsonList to the file
     final file = await _localFile;
     await file.writeAsString(jsonEncode(plantJsonList));
-    log("Successfully wrote plants to db");
-    log(plants.toString());
+    log("Wrote plants to DB");
     return true;
   }
 
   Future<List<Plant>> getPlants() async {
+    log("Getting plants");
     try {
       final file = await _localFile;
       final contents = await file.readAsString();
