@@ -279,7 +279,7 @@ class PlantInfoPage extends StatelessWidget {
                                             Navigator.push(
                                             context,
                                             MaterialPageRoute(builder: ((context) => AddNotePage(onSaveNote: _onSaveNote, database: db, plant: displayPlant,))),
-                                          );
+                                          ).then((value) => setState((){refreshPlantList(); }) );
                                         },
                                       ),
                                     ),
@@ -307,9 +307,12 @@ class PlantInfoPage extends StatelessWidget {
   Widget getNotesAsListView(Plant displayPlant) {
     List<Note> notes = displayPlant.note;
     
-    if (notes.isEmpty) return Container();
+    if (notes.isEmpty){
+      return Container();
+    }
 
     return ListView.builder(
+    shrinkWrap: true,
     itemCount: notes.length,
     itemBuilder: (context, index) {
       final note = notes[index];
