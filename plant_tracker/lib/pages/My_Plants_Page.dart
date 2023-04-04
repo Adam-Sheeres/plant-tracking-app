@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => PlantInfoPage(
-                  displayPlant: plant, refreshPlantList: refreshPlantList),
+                  displayPlant: plant, index: plant.plant_id, refreshPlantList: refreshPlantList),
             ),
           );
         },

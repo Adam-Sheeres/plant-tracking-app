@@ -11,12 +11,16 @@ import 'add_note_page.dart';
 // ignore: must_be_immutable
 class PlantInfoPage extends StatelessWidget {
   Plant displayPlant;
+  int index;
   plant_db db = plant_db();
-  PlantInfoPage({super.key, required this.displayPlant, required this.refreshPlantList});
+  PlantInfoPage({super.key, required this.displayPlant, required this.index, required this.refreshPlantList});
   final VoidCallback refreshPlantList;
 
-  _onSaveNote(String p1) {
-    //TODO: Refresh the state of this widget 
+  Future<bool> _onSaveNote() async {
+    //TODO: Refresh the state of this widget
+    List<Plant> templist = await db.getPlants();
+    displayPlant = templist[index-1];
+    return true;
   }
 
   @override
@@ -275,11 +279,14 @@ class PlantInfoPage extends StatelessWidget {
                                           Icons.add,
                                           color: Colors.white, // Set the color of the icon
                                         ),
-                                        onPressed: () {
-                                            Navigator.push(
+                                        onPressed: () async {
+                                            await Navigator.push(
                                             context,
                                             MaterialPageRoute(builder: ((context) => AddNotePage(onSaveNote: _onSaveNote, database: db, plant: displayPlant,))),
-                                          ).then((value) => setState((){refreshPlantList(); }) );
+                                          ).then((value) => setState((){refreshPlantList(); }));
+                                          await _onSaveNote();
+                                          //setState((){refreshPlantList(); });
+                                          setState(() {});
                                         },
                                       ),
                                     ),
@@ -341,14 +348,6 @@ class PlantInfoPage extends StatelessWidget {
     NotificationService x = NotificationService();
 
     if (hoursSinceLastWatered >= wateringIntervalInHours) {
-      //send a notification
-      if (!plant.hasShownNotification) {
-        x.showNotification(
-            body: "Your ${plant.plant_name} needs some love!",
-            title: "BloomBuddy",
-            payLoad: "payload");
-        plant.hasShownNotification = true;
-      }
       return 0.0;
     }
 
