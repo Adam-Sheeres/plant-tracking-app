@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:plant_tracker/plant_db.dart';
 import 'package:intl/intl.dart';
 import '../services/notification.dart';
+import 'My_Plants_Page.dart';
+import 'add_note_page.dart';
 
 // ignore: must_be_immutable
 class PlantInfoPage extends StatelessWidget {
@@ -12,6 +14,10 @@ class PlantInfoPage extends StatelessWidget {
   plant_db db = plant_db();
   PlantInfoPage({super.key, required this.displayPlant, required this.refreshPlantList});
   final VoidCallback refreshPlantList;
+
+  _onSaveNote(String p1) {
+    //TODO: Refresh the state of this widget 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -247,29 +253,38 @@ class PlantInfoPage extends StatelessWidget {
                               const SizedBox(
                                 height: 20,
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: const [
-                                ],
-                              ),
                                 Row(
-                                children: [
-                                  const Text(
-                                    "Notes",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 30,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                    IconButton(
-                                              icon: Icon(Icons.add),
-                                                onPressed: () {
-                                            },
-                                          ),
-                                        ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Add this line to spread the children horizontally
+                                  children: [
+                                    const Text(
+                                      "Notes",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 30,
+                                        decoration: TextDecoration.underline,
                                       ),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                    Container( // Wrap IconButton inside a Container widget
+                                      decoration: const BoxDecoration( // Add BoxDecoration to give the container a circular shape
+                                        shape: BoxShape.circle,
+                                        color: greenColour, // Set the color of the container
+                                      ),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.add,
+                                          color: Colors.white, // Set the color of the icon
+                                        ),
+                                        onPressed: () {
+                                            Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: ((context) => AddNotePage(onSaveNote: _onSaveNote, database: db, plant: displayPlant,))),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               const SizedBox(
                                 height: 20,
                               ),
@@ -303,6 +318,10 @@ class PlantInfoPage extends StatelessWidget {
       );
     },
     );
+  }
+
+  void saveNewNode(String noteText) {
+    
   }
 
 
@@ -348,4 +367,6 @@ class PlantInfoPage extends StatelessWidget {
     final notes = plant.note;
     return notes.length;
   }
+
+
 }

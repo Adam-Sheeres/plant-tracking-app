@@ -187,8 +187,9 @@ class plant_db {
     return File('$path/plant_list.json');
   }
 
-  Future<void> addNote(String plantName, Note newNote) async {
+  Future<void> addNote(String plantName, String text) async {
     List<Plant> plants = await getPlants();
+    Note newNote = Note(dateAdded: DateTime.now(), note: text); //create a new note 
 
     // Find the plant with the given name
     int plantIndex =
