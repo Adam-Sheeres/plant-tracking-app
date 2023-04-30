@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
 enum LightLevel { dark, medium, bright }
@@ -286,5 +287,19 @@ class plant_db {
     } catch (e) {
       return [];
     }
+  }
+
+  Future<String> getDBAsJSON() async {
+    try {
+      final file = await _localFile;
+      return await file.readAsString();
+    } catch (e) {
+      return '';
+    }
+  }
+
+  Future<void> setDBToJSON(String jsonString) async {
+    final file = await _localFile;
+    await file.writeAsString(jsonString);
   }
 }

@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:plant_tracker/pages/add_plant_page.dart';
 import '../services/Navigation_Drawer.dart';
-import '../services/notification.dart';
 import 'package:plant_tracker/plant_db.dart';
 import 'Plant_Info_Page.dart';
 
@@ -317,7 +316,6 @@ Widget _buildImage(Plant plant) {
     int wateringIntervalInHours = plant.water_days * 24;
 
     // If the plant has not been watered for longer than its watering interval, return 0
-    NotificationService x = NotificationService();
 
     if (hoursSinceLastWatered >= wateringIntervalInHours) {
       return 0.0;

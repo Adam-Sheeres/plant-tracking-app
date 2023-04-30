@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:plant_tracker/plant_db.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -42,12 +47,12 @@ class _SettingsPage extends State<SettingsPage> {
           buildSettingsTile(
             icon: Icons.import_export,
             label: "Import",
-            onPressed: () {},
+            onPressed: () {importDatabase();},
           ),
           buildSettingsTile(
             icon: Icons.import_export,
             label: "Export",
-            onPressed: () {},
+            onPressed: () {exportDatabase();},
           ),
         ],
       ),
@@ -119,4 +124,59 @@ class _SettingsPage extends State<SettingsPage> {
       ),
     );
   }
+
+    Future<void> exportDatabase() async {
+    // Get the directory where the file will be saved
+    Directory? directory = await getExternalStorageDirectory();
+    if (directory != null) {
+      String path = directory.path;
+      String fileName = "plant_db.json";
+      File file = File("$path/$fileName");
+      log(file.toString());
+
+      // Get the JSON string from the database
+      List<Plant> plants = await _plant_db.getPlants();
+      String jsonString = jsonEncode(plants);
+
+      // Write the JSON string to the file
+      file.writeAsString(jsonString);
+
+      // Show a snackbar to confirm the export
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Database exported as $path/$fileName"),
+      ));
+    }
   }
+
+    Future<void> importDatabase() async {
+    // Get the directory where the file can be found
+    Directory? directory = await getExternalStorageDirectory();
+    if (directory != null) {
+      // Show a file picker to allow the user to select the JSON file
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+      if (result != null) {
+        PlatformFile file = result.files.first;
+        String filePath = file.path!;
+        File dbFile = File(filePath);
+
+        // Read the JSON string from the file
+        String jsonString = await dbFile.readAsString();
+
+        // Write the JSON string to the database
+        List<dynamic> jsonList = jsonDecode(jsonString);
+        List<Plant> plants = jsonList.map((json) => Plant.fromJson(json)).toList();
+        await _plant_db.writePlants(plants);
+
+        // Show a snackbar to confirm the import
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Database imported from ${file.name}"),
+        ));
+      }
+    }
+  }
+}

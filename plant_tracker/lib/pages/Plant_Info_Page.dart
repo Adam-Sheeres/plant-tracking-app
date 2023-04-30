@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:plant_tracker/plant_db.dart';
 import 'package:intl/intl.dart';
-import '../services/notification.dart';
 import 'My_Plants_Page.dart';
 import 'add_note_page.dart';
 
@@ -265,7 +264,6 @@ class PlantInfoPage extends StatelessWidget {
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 30,
-                                        decoration: TextDecoration.underline,
                                       ),
                                       textAlign: TextAlign.start,
                                     ),
@@ -319,15 +317,38 @@ class PlantInfoPage extends StatelessWidget {
     }
 
     return ListView.builder(
-    shrinkWrap: true,
-    itemCount: notes.length,
-    itemBuilder: (context, index) {
-      final note = notes[index];
-      return ListTile(
-        title: Text(note.note),
-        subtitle: Text(note.dateAdded.toString()),
-      );
-    },
+      shrinkWrap: true,
+      itemCount: notes.length,
+      itemBuilder: (context, index) {
+        final note = notes[index];
+        return Card(
+          color: Colors.green,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  DateFormat('MMMM dd, yyyy').format(note.dateAdded),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  note.note,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -343,9 +364,6 @@ class PlantInfoPage extends StatelessWidget {
 
     int hoursSinceLastWatered = now.difference(lastWatered).inHours;
     int wateringIntervalInHours = plant.water_days * 24;
-
-    // If the plant has not been watered for longer than its watering interval, return 0
-    NotificationService x = NotificationService();
 
     if (hoursSinceLastWatered >= wateringIntervalInHours) {
       return 0.0;
